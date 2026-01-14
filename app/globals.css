@@ -2,26 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    @apply bg-white;
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  
+  body {
+    @apply bg-white text-gray-900;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  /* Ensure form elements have visible text */
+  input, select, textarea {
+    @apply text-gray-900 bg-white;
+  }
+  
+  input::placeholder, textarea::placeholder {
+    @apply text-gray-400;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* Mobile-first responsive improvements */
+@media (max-width: 640px) {
+  /* Ensure touch targets are at least 44x44px */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve form input sizing on mobile */
+  input, select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }

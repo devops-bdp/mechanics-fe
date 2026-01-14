@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mechanics Activity Report - Frontend
+
+A modern, mobile-responsive Next.js 14 frontend application for the Mechanics Activity Report system.
+
+## Features
+
+- 🎨 **Mobile-First Design**: Fully responsive and optimized for phone devices
+- 🔐 **Authentication**: Secure login and user management
+- 👷 **Mechanics Dashboard**: Work time tracking and activity management
+- 📋 **Planner Dashboard**: Activity creation and assignment
+- 📱 **Touch-Friendly**: Optimized for mobile interactions
+- ⚡ **Fast & Modern**: Built with Next.js 14 and TypeScript
+
+## Tech Stack
+
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **Axios** - HTTP client for API requests
+- **js-cookie** - Cookie management
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ and npm
+- Backend API running (see `mar-be` directory)
+
+### Installation
+
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create environment file:
+```bash
+# Create .env.local file in the mar-fe directory with:
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   Note: The default backend port is 8000. Adjust if your backend runs on a different port.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+mar-fe/
+├── app/                    # Next.js App Router pages
+│   ├── login/             # Login page
+│   ├── dashboard/         # Main dashboard
+│   ├── profile/           # User profile settings
+│   ├── mechanics/         # Mechanics-specific pages
+│   │   ├── work-times/    # Work time tracking
+│   │   └── activities/    # Activity management
+│   └── planner/           # Planner-specific pages
+│       └── activities/    # Activity creation
+├── components/            # Reusable React components
+│   ├── Navbar.tsx        # Navigation bar
+│   └── ProtectedRoute.tsx # Route protection
+├── lib/                   # Utility functions
+│   ├── api.ts            # API client
+│   └── auth.ts           # Authentication helpers
+└── public/               # Static assets
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## User Roles & Permissions
 
-## Deploy on Vercel
+### Mechanics (MEKANIK)
+- View and create work times
+- View assigned activities
+- Start, pause, resume, and stop activities
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Planners (PLANNER)
+- Create and manage activities
+- Assign activities to mechanics
+- View all activities
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Admins (ADMIN/SUPERADMIN)
+- Full access to all features
+- User management
+- System configuration
+
+## Mobile Optimization
+
+The application is fully optimized for mobile devices:
+
+- **Responsive Layout**: Adapts to all screen sizes
+- **Touch Targets**: Minimum 44x44px for easy tapping
+- **Mobile Navigation**: Hamburger menu for small screens
+- **Form Optimization**: Prevents iOS zoom on input focus
+- **Fast Loading**: Optimized assets and code splitting
+
+## API Integration
+
+The frontend communicates with the backend API. Make sure:
+
+1. Backend is running on the port specified in `NEXT_PUBLIC_API_URL`
+2. API endpoints match the routes defined in `lib/api.ts`
+3. CORS is properly configured on the backend
+
+## Building for Production
+
+```bash
+npm run build
+npm start
+```
+
+## Environment Variables
+
+- `NEXT_PUBLIC_API_URL` - Backend API URL (default: http://localhost:8000)
+
+## Development Tips
+
+- Use the mobile view in browser DevTools to test mobile experience
+- Check the Network tab to debug API calls
+- Use React DevTools for component debugging
+
+## License
+
+ISC
