@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { getUser, logout } from '@/lib/auth';
 
@@ -24,8 +25,20 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/dashboard" className="text-xl font-bold text-primary-600">
-              MAR
+            <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <Image
+                src="/NavLogo.png"
+                alt="Mechanic Activity Report Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+              <span className="text-lg font-bold text-primary-600 hidden sm:inline">
+                Mechanic Activity Report
+              </span>
+              <span className="text-lg font-bold text-primary-600 sm:hidden">
+                MAR
+              </span>
             </Link>
           </div>
 
@@ -47,6 +60,32 @@ export default function Navbar() {
                 href="/planner/activities"
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive('/planner/activities')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Activities
+              </Link>
+            ) : null}
+
+            {(user.posisi === 'GROUP_LEADER_MEKANIK' || user.posisi === 'GROUP_LEADER_TYRE') ? (
+              <Link
+                href="/group-leader/activities"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive('/group-leader/activities')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Activities
+              </Link>
+            ) : null}
+
+            {user.posisi === 'SUPERVISOR' ? (
+              <Link
+                href="/supervisor/activities"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive('/supervisor/activities')
                     ? 'bg-primary-100 text-primary-700'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
@@ -83,14 +122,14 @@ export default function Navbar() {
             {user.posisi === 'MEKANIK' ? (
               <>
                 <Link
-                  href="/mechanics/work-times"
+                  href="/mechanics/activities/list"
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive('/mechanics/work-times')
+                    isActive('/mechanics/activities/list')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  Work Times
+                  List Activities
                 </Link>
                 <Link
                   href="/mechanics/activities"
@@ -187,6 +226,34 @@ export default function Navbar() {
               </Link>
             ) : null}
 
+            {(user.posisi === 'GROUP_LEADER_MEKANIK' || user.posisi === 'GROUP_LEADER_TYRE') ? (
+              <Link
+                href="/group-leader/activities"
+                onClick={() => setIsMenuOpen(false)}
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive('/group-leader/activities')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Activities
+              </Link>
+            ) : null}
+
+            {user.posisi === 'SUPERVISOR' ? (
+              <Link
+                href="/supervisor/activities"
+                onClick={() => setIsMenuOpen(false)}
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive('/supervisor/activities')
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Activities
+              </Link>
+            ) : null}
+
             {user.role === 'SUPERADMIN' && (
               <>
                 <Link
@@ -217,15 +284,15 @@ export default function Navbar() {
             {user.posisi === 'MEKANIK' ? (
               <>
                 <Link
-                  href="/mechanics/work-times"
+                  href="/mechanics/activities/list"
                   onClick={() => setIsMenuOpen(false)}
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
-                    isActive('/mechanics/work-times')
+                    isActive('/mechanics/activities/list')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  Work Times
+                  List Activities
                 </Link>
                 <Link
                   href="/mechanics/activities"

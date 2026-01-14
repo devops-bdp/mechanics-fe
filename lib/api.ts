@@ -183,7 +183,6 @@ class ApiClient {
   async createActivity(data: {
     activityName: string;
     unitId: string;
-    mechanicIds: string[];
     description?: string;
     remarks?: string;
     estimatedStart: string;
@@ -207,7 +206,6 @@ class ApiClient {
     id: string,
     data: {
       unitId?: string;
-      mechanicIds?: string[];
       description?: string;
       remarks?: string;
       estimatedStart?: string;
@@ -354,6 +352,84 @@ class ApiClient {
 
   async getDashboardStats() {
     const response = await this.client.get("/api/superadmin/dashboard/stats");
+    return response.data;
+  }
+
+  // Group Leader endpoints
+  async getGroupLeaderActivities() {
+    const response = await this.client.get("/api/groupleader/activities");
+    return response.data;
+  }
+
+  async getGroupLeaderActivityById(id: string) {
+    const response = await this.client.get(`/api/groupleader/activities/${id}`);
+    return response.data;
+  }
+
+  async updateGroupLeaderActivity(
+    id: string,
+    data: {
+      activityStatus?: string;
+      description?: string;
+      remarks?: string;
+    }
+  ) {
+    const response = await this.client.put(
+      `/api/groupleader/activities/${id}`,
+      data
+    );
+    return response.data;
+  }
+
+  async assignMechanicsToActivityGroupLeader(activityId: string, mechanicIds: string[]) {
+    const response = await this.client.post(
+      `/api/groupleader/activities/${activityId}/assign-mechanics`,
+      { mechanicIds }
+    );
+    return response.data;
+  }
+
+  async getGroupLeaderMechanics() {
+    const response = await this.client.get("/api/groupleader/mechanics");
+    return response.data;
+  }
+
+  // Supervisor endpoints
+  async getSupervisorActivities() {
+    const response = await this.client.get("/api/supervisor/activities");
+    return response.data;
+  }
+
+  async getSupervisorActivityById(id: string) {
+    const response = await this.client.get(`/api/supervisor/activities/${id}`);
+    return response.data;
+  }
+
+  async updateSupervisorActivity(
+    id: string,
+    data: {
+      activityStatus?: string;
+      description?: string;
+      remarks?: string;
+    }
+  ) {
+    const response = await this.client.put(
+      `/api/supervisor/activities/${id}`,
+      data
+    );
+    return response.data;
+  }
+
+  async assignMechanicsToActivity(activityId: string, mechanicIds: string[]) {
+    const response = await this.client.post(
+      `/api/supervisor/activities/${activityId}/assign-mechanics`,
+      { mechanicIds }
+    );
+    return response.data;
+  }
+
+  async getSupervisorMechanics() {
+    const response = await this.client.get("/api/supervisor/mechanics");
     return response.data;
   }
 }
