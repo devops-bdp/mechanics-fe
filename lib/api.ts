@@ -302,6 +302,22 @@ class ApiClient {
     return response.data;
   }
 
+  // Analytics endpoints
+  async getActivityAnalytics() {
+    const response = await this.client.get("/api/planner/analytics/activities");
+    return response.data;
+  }
+
+  async getUnitAnalytics() {
+    const response = await this.client.get("/api/planner/analytics/units");
+    return response.data;
+  }
+
+  async getMechanicsAnalytics() {
+    const response = await this.client.get("/api/planner/analytics/mechanics");
+    return response.data;
+  }
+
   async getUserById(id: string) {
     const response = await this.client.get(`/api/superadmin/users/${id}`);
     return response.data;

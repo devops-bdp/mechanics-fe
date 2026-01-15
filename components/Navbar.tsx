@@ -80,12 +80,22 @@ export default function Navbar() {
                 <Link
                   href="/planner/reports"
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive('/planner/reports')
+                    isActive('/planner/reports') || pathname.startsWith('/planner/reports')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   Reports
+                </Link>
+                <Link
+                  href="/planner/analytics"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive('/planner/analytics')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Analytics
                 </Link>
               </>
             ) : null}
@@ -262,12 +272,23 @@ export default function Navbar() {
                   href="/planner/reports"
                   onClick={() => setIsMenuOpen(false)}
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
-                    isActive('/planner/reports')
+                    isActive('/planner/reports') || pathname.startsWith('/planner/reports')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   Reports
+                </Link>
+                <Link
+                  href="/planner/analytics"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/planner/analytics')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Analytics
                 </Link>
               </>
             ) : null}
