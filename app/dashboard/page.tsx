@@ -14,6 +14,7 @@ export default function DashboardPage() {
     workTimes: 0,
     activities: 0,
     activeActivities: 0,
+    totalPopulation: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -78,26 +79,38 @@ export default function DashboardPage() {
         setTotalWorkTime(totalWT); // Total time in minutes from all tasks
         setCompletedActivities(completed);
       } else if (currentUser?.posisi === 'PLANNER' || currentUser?.role === 'ADMIN' || currentUser?.role === 'SUPERADMIN') {
-        const activitiesRes = await apiClient.getAllActivities();
+        const [activitiesRes, unitsRes] = await Promise.all([
+          apiClient.getAllActivities(),
+          apiClient.getUnits({ limit: 1, page: 1 })
+        ]);
         setStats({
           workTimes: 0,
           activities: activitiesRes.data?.length || 0,
           activeActivities: activitiesRes.data?.filter((a: any) => a.status === 'IN_PROGRESS' || a.status === 'PAUSED').length || 0,
+          totalPopulation: unitsRes.pagination?.totalCount || 0,
         });
       } else if (currentUser?.posisi === 'GROUP_LEADER_MEKANIK' || currentUser?.posisi === 'GROUP_LEADER_TYRE') {
-        const activitiesRes = await apiClient.getGroupLeaderActivities();
+        const [activitiesRes, unitsRes] = await Promise.all([
+          apiClient.getGroupLeaderActivities(),
+          apiClient.getUnits({ limit: 1, page: 1 })
+        ]);
         setStats({
           workTimes: 0,
           activities: activitiesRes.data?.length || 0,
           activeActivities: activitiesRes.data?.filter((a: any) => a.activityStatus === 'IN_PROGRESS' || a.activityStatus === 'PAUSED').length || 0,
+          totalPopulation: unitsRes.pagination?.totalCount || 0,
         });
         setActivities(activitiesRes.data?.slice(0, 5) || []);
       } else if (currentUser?.posisi === 'SUPERVISOR') {
-        const activitiesRes = await apiClient.getSupervisorActivities();
+        const [activitiesRes, unitsRes] = await Promise.all([
+          apiClient.getSupervisorActivities(),
+          apiClient.getUnits({ limit: 1, page: 1 })
+        ]);
         setStats({
           workTimes: 0,
           activities: activitiesRes.data?.length || 0,
           activeActivities: activitiesRes.data?.filter((a: any) => a.activityStatus === 'IN_PROGRESS' || a.activityStatus === 'PAUSED').length || 0,
+          totalPopulation: unitsRes.pagination?.totalCount || 0,
         });
         setActivities(activitiesRes.data?.slice(0, 5) || []);
       }
@@ -346,6 +359,29 @@ export default function DashboardPage() {
                   <div className="bg-gray-50 px-5 py-3">
                     <div className="text-sm text-gray-500">
                       Currently in progress
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        </svg>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">Total Population</dt>
+                          <dd className="text-2xl font-semibold text-gray-900">{stats.totalPopulation}</dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 px-5 py-3">
+                    <div className="text-sm text-gray-500">
+                      Total units in system
                     </div>
                   </div>
                 </div>

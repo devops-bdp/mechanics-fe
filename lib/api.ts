@@ -220,8 +220,17 @@ class ApiClient {
   }
 
   // Unit endpoints
-  async getUnits() {
-    const response = await this.client.get("/api/units");
+  async getUnits(params?: {
+    status?: string;
+    type?: string;
+    brand?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: string;
+  }) {
+    const response = await this.client.get("/api/units", { params });
     return response.data;
   }
 
@@ -231,9 +240,12 @@ class ApiClient {
   }
 
   async createUnit(data: {
-    name: string;
-    model: string;
-    serialNumber: string;
+    unitType: string;
+    unitBrand: string;
+    unitCode: string;
+    unitDescription?: string;
+    unitImage?: string;
+    unitStatus?: string;
   }) {
     const response = await this.client.post("/api/units", data);
     return response.data;
@@ -273,6 +285,20 @@ class ApiClient {
   async getMechanics() {
     // Get mechanics from planner endpoint (accessible by planners)
     const response = await this.client.get("/api/planner/mechanics");
+    return response.data;
+  }
+
+  async getBreakdownUnitsReport() {
+    const response = await this.client.get("/api/planner/unit-report/breakdown");
+    return response.data;
+  }
+
+  async getMechanicsReport(params?: {
+    search?: string;
+  }) {
+    const response = await this.client.get("/api/planner/mechanics-report", {
+      params,
+    });
     return response.data;
   }
 

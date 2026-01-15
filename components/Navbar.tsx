@@ -56,16 +56,38 @@ export default function Navbar() {
             </Link>
 
             {user.posisi === 'PLANNER' || user.role === 'ADMIN' || user.role === 'SUPERADMIN' ? (
-              <Link
-                href="/planner/activities"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/planner/activities')
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                Activities
-              </Link>
+              <>
+                <Link
+                  href="/planner/activities"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive('/planner/activities')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Activities
+                </Link>
+                <Link
+                  href="/planner/units"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive('/planner/units')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Units
+                </Link>
+                <Link
+                  href="/planner/reports"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive('/planner/reports')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Reports
+                </Link>
+              </>
             ) : null}
 
             {(user.posisi === 'GROUP_LEADER_MEKANIK' || user.posisi === 'GROUP_LEADER_TYRE') ? (
@@ -213,17 +235,41 @@ export default function Navbar() {
             </Link>
 
             {user.posisi === 'PLANNER' || user.role === 'ADMIN' || user.role === 'SUPERADMIN' ? (
-              <Link
-                href="/planner/activities"
-                onClick={() => setIsMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/planner/activities')
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                Activities
-              </Link>
+              <>
+                <Link
+                  href="/planner/activities"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/planner/activities')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Activities
+                </Link>
+                <Link
+                  href="/planner/units"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/planner/units')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Units
+                </Link>
+                <Link
+                  href="/planner/reports"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/planner/reports')
+                      ? 'bg-primary-100 text-primary-700'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Reports
+                </Link>
+              </>
             ) : null}
 
             {(user.posisi === 'GROUP_LEADER_MEKANIK' || user.posisi === 'GROUP_LEADER_TYRE') ? (

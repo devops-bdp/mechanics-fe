@@ -48,5 +48,6 @@ export interface Unit {
   unitType: string;
   unitBrand: string;
   unitDescription?: string;
+  unitStatus?: string;
 }
 

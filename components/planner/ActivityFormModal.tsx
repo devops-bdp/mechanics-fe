@@ -14,6 +14,7 @@ interface ActivityFormModalProps {
   };
   units: Unit[];
   isSubmitting: boolean;
+  error?: string;
   onClose: () => void;
   onSubmit: (e: FormEvent) => void;
   onFormDataChange: (data: any) => void;
@@ -25,6 +26,7 @@ export default function ActivityFormModal({
   formData,
   units,
   isSubmitting,
+  error,
   onClose,
   onSubmit,
   onFormDataChange,
@@ -39,6 +41,11 @@ export default function ActivityFormModal({
           <h3 className="text-lg font-medium text-gray-900">Create Activity</h3>
         </div>
         <form onSubmit={onSubmit} className="px-6 py-4">
+          {error && (
+            <div className="mb-4 rounded-md bg-red-50 p-3">
+              <div className="text-sm text-red-800 whitespace-pre-line">{error}</div>
+            </div>
+          )}
           <div className="space-y-4">
             <div>
               <label
@@ -109,12 +116,24 @@ export default function ActivityFormModal({
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               >
                 <option value="">Select a unit</option>
-                {units.map((unit) => (
-                  <option key={unit.id} value={unit.id}>
-                    {unit.unitCode} - {unit.unitType} ({unit.unitBrand})
-                  </option>
-                ))}
+                {units
+                  .filter((unit) => unit.unitStatus === "BREAKDOWN" || unit.unitStatus === "INACTIVE")
+                  .map((unit) => (
+                    <option key={unit.id} value={unit.id}>
+                      {unit.unitCode} - {unit.unitType} ({unit.unitBrand}) - {unit.unitStatus}
+                    </option>
+                  ))}
               </select>
+              {units.filter((unit) => unit.unitStatus === "BREAKDOWN" || unit.unitStatus === "INACTIVE").length === 0 && (
+                <p className="mt-2 text-xs text-amber-600 bg-amber-50 p-2 rounded">
+                  ⚠️ No units with BREAKDOWN or INACTIVE status available. Please change unit status first.
+                </p>
+              )}
+              {units.filter((unit) => unit.unitStatus === "BREAKDOWN" || unit.unitStatus === "INACTIVE").length > 0 && (
+                <p className="mt-1 text-xs text-gray-500">
+                  Only units with BREAKDOWN or INACTIVE status can be selected for activities.
+                </p>
+              )}
             </div>
 
             <div>

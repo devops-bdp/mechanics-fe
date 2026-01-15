@@ -74,6 +74,13 @@ export default function PlannerActivitiesPage() {
     setError("");
 
     try {
+      // Check if selected unit has BREAKDOWN or INACTIVE status
+      const selectedUnit = units.find((u) => u.id === formData.unitId);
+      if (selectedUnit && selectedUnit.unitStatus !== "BREAKDOWN" && selectedUnit.unitStatus !== "INACTIVE") {
+        setError(`Cannot create activity for unit with ${selectedUnit.unitStatus} status. Unit must be in BREAKDOWN or INACTIVE status. Please change the unit status first.`);
+        return;
+      }
+
       const response = await apiClient.createActivity({
         activityName: formData.activityName,
         unitId: formData.unitId,
@@ -92,11 +99,13 @@ export default function PlannerActivitiesPage() {
           estimatedStart: "",
         });
         loadData();
+        setError("");
       } else {
         setError(response.message || "Failed to create activity");
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred");
+      const errorMessage = err.response?.data?.message || err.message || "An error occurred";
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -195,7 +204,11 @@ export default function PlannerActivitiesPage() {
             formData={formData}
             units={units}
             isSubmitting={isSubmitting}
-            onClose={() => setIsModalOpen(false)}
+            error={error}
+            onClose={() => {
+              setIsModalOpen(false);
+              setError("");
+            }}
             onSubmit={handleSubmit}
             onFormDataChange={setFormData}
             onError={setError}
