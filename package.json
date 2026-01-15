@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:static": "cp next.config.apk.mjs next.config.mjs && next build && cp next.config.vercel.mjs next.config.mjs",
+    "build:apk": "npm run build:static && npx cap sync && npx cap open android",
+    "build:apk:prod": "NEXT_PUBLIC_API_URL=https://your-backend.vercel.app npm run build:static && npx cap sync",
     "start": "next start",
     "lint": "next lint"
   },
