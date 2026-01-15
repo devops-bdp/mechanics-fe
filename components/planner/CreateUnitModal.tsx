@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { apiClient } from "@/lib/api";
+import { showError, showSuccess } from "@/lib/swal";
 
 const UNIT_TYPES = [
   "PMVV",
@@ -55,15 +56,13 @@ export default function CreateUnitModal({
     unitStatus: "ACTIVE",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
 
     // Validation
     if (!formData.unitType || !formData.unitBrand || !formData.unitCode) {
-      setError("Please fill in all required fields");
+      await showError("Please fill in all required fields");
       return;
     }
 
@@ -80,6 +79,7 @@ export default function CreateUnitModal({
       });
 
       if (response.success) {
+        await showSuccess("Unit created successfully!");
         onSuccess();
         onClose();
         // Reset form
@@ -91,12 +91,11 @@ export default function CreateUnitModal({
           unitImage: "",
           unitStatus: "ACTIVE",
         });
-        setError("");
       } else {
-        setError(response.message || "Failed to create unit");
+        await showError(response.message || "Failed to create unit");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || "An error occurred");
+      await showError(err.response?.data?.message || err.message || "An error occurred");
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +104,6 @@ export default function CreateUnitModal({
   const handleClose = () => {
     if (!isSubmitting) {
       onClose();
-      setError("");
     }
   };
 
@@ -119,12 +117,6 @@ export default function CreateUnitModal({
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-4">
-          {error && (
-            <div className="mb-4 rounded-md bg-red-50 p-3">
-              <div className="text-sm text-red-800">{error}</div>
-            </div>
-          )}
-
           <div className="space-y-4">
             {/* Unit Type */}
             <div>

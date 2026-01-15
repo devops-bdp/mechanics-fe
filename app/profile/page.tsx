@@ -5,13 +5,13 @@ import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { getUser, setUser } from '@/lib/auth';
 import { apiClient } from '@/lib/api';
+import { showError, showSuccess } from '@/lib/swal';
 
 export default function ProfilePage() {
   const [user, setUserState] = useState<any>(null);
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
     const currentUser = getUser();
@@ -25,7 +25,6 @@ export default function ProfilePage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage(null);
 
     try {
       const response = await apiClient.updateProfile({
@@ -37,15 +36,12 @@ export default function ProfilePage() {
         const updatedUser = { ...user, name, phoneNumber };
         setUser(updatedUser);
         setUserState(updatedUser);
-        setMessage({ type: 'success', text: 'Profile updated successfully!' });
+        await showSuccess('Profile updated successfully!');
       } else {
-        setMessage({ type: 'error', text: response.message || 'Failed to update profile' });
+        await showError(response.message || 'Failed to update profile');
       }
     } catch (error: any) {
-      setMessage({
-        type: 'error',
-        text: error.response?.data?.message || 'An error occurred',
-      });
+      await showError(error.response?.data?.message || 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -69,18 +65,6 @@ export default function ProfilePage() {
           <div className="bg-white shadow rounded-lg">
             <div className="px-4 py-5 sm:p-6">
               <h1 className="text-2xl font-bold text-gray-900 mb-6">Profile Settings</h1>
-
-              {message && (
-                <div
-                  className={`mb-4 rounded-md p-4 ${
-                    message.type === 'success'
-                      ? 'bg-green-50 text-green-800'
-                      : 'bg-red-50 text-red-800'
-                  }`}
-                >
-                  {message.text}
-                </div>
-              )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>

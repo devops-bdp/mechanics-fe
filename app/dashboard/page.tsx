@@ -10,6 +10,13 @@ import { apiClient } from '@/lib/api';
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  
+  // Debug: Log user posisi to check if it's set correctly
+  useEffect(() => {
+    if (user) {
+      console.log('User posisi:', user.posisi);
+    }
+  }, [user]);
   const [stats, setStats] = useState({
     workTimes: 0,
     activities: 0,
@@ -122,16 +129,58 @@ export default function DashboardPage() {
     }
   };
 
+  // Get user's full name
+  const getUserName = () => {
+    if (!user) return 'User';
+    if (user.posisi === 'MEKANIK') {
+      if (user.firstName && user.lastName) {
+        return `Mekanik ${user.firstName} ${user.lastName}`;
+      }
+      if (user.name) return `Mekanik ${user.name}`;
+    } else {
+      if (user.firstName && user.lastName) {
+        return `${user.firstName} ${user.lastName}`;
+      }
+      if (user.name) return user.name;
+    }
+    return 'User';
+  };
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Welcome back, {user?.name || 'User'}!
-            </p>
+          {/* Dashboard Header Section with Logo */}
+          <div className="mb-8 rounded-xl p-6 bg-gray-50 border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Dashboard
+                </h1>
+                <p className="mt-2 text-sm text-gray-600">
+                  Welcome back, {getUserName()}!
+                </p>
+              </div>
+              {user?.posisi === 'MEKANIK' && (
+                <div className="hidden sm:block flex-shrink-0 ml-4">
+                  <img 
+                    src="/mechanicsBG.png" 
+                    alt="Mechanic Logo" 
+                    className="h-24 w-auto object-contain"
+                  />
+                </div>
+              )}
+              {(user?.posisi === 'PLANNER' || user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                <div className="hidden sm:block flex-shrink-0 ml-4">
+                  <img 
+                    src="/plannerBG.png" 
+                    alt="Planner Logo" 
+                    className="h-24 w-auto object-contain"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {isLoading ? (

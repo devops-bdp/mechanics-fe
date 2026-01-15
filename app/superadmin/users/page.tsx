@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { apiClient } from '@/lib/api';
+import { showError, showSuccess, showConfirm } from '@/lib/swal';
 
 interface User {
   id: string;
@@ -33,7 +34,6 @@ export default function SuperAdminUsersPage() {
     password: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -67,7 +67,7 @@ export default function SuperAdminUsersPage() {
         setPagination(response.pagination || pagination);
       }
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Failed to load users');
+      await showError(error.response?.data?.message || 'Failed to load users');
     } finally {
       setIsLoading(false);
     }
@@ -89,24 +89,31 @@ export default function SuperAdminUsersPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+    const result = await showConfirm(
+      'Are you sure you want to delete this user? This action cannot be undone.',
+      'Delete User',
+      'Yes, delete it',
+      'Cancel'
+    );
+    
+    if (!result.isConfirmed) return;
 
     try {
       const response = await apiClient.deleteUser(id);
       if (response.success) {
+        await showSuccess('User deleted successfully!');
         loadUsers();
       } else {
-        setError(response.message || 'Failed to delete user');
+        await showError(response.message || 'Failed to delete user');
       }
     } catch (error: any) {
-      setError(error.response?.data?.message || 'An error occurred');
+      await showError(error.response?.data?.message || 'An error occurred');
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError('');
 
     try {
       if (editingUser) {
@@ -137,13 +144,45 @@ export default function SuperAdminUsersPage() {
             phoneNumber: '',
             password: '',
           });
+          await showSuccess('User updated successfully!');
           loadUsers();
         } else {
-          setError(response.message || 'Failed to update user');
+          await showError(response.message || 'Failed to update user');
+        }
+      } else {
+        // Create new user
+        const createData: any = {
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          nrp: parseInt(formData.nrp),
+          role: formData.role,
+          posisi: formData.posisi,
+          phoneNumber: formData.phoneNumber || undefined,
+          password: formData.password,
+        };
+
+        const response = await apiClient.createAccount(createData);
+        if (response.success) {
+          setIsModalOpen(false);
+          setFormData({
+            email: '',
+            firstName: '',
+            lastName: '',
+            nrp: '',
+            role: 'USERS',
+            posisi: 'MEKANIK',
+            phoneNumber: '',
+            password: '',
+          });
+          await showSuccess('User created successfully!');
+          loadUsers();
+        } else {
+          await showError(response.message || 'Failed to create user');
         }
       }
     } catch (error: any) {
-      setError(error.response?.data?.message || 'An error occurred');
+      await showError(error.response?.data?.message || 'An error occurred');
     } finally {
       setIsSubmitting(false);
     }
@@ -210,12 +249,6 @@ export default function SuperAdminUsersPage() {
               </div>
             </div>
           </div>
-
-          {error && (
-            <div className="mb-4 rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-800">{error}</div>
-            </div>
-          )}
 
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
