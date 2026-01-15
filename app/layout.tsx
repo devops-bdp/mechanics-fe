@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   title: "Mechanic Activity Report",
   description: "Activity reporting system for mechanics",
   manifest: "/manifest.json",
-  themeColor: "#3b82f6",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -35,6 +34,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#3b82f6",
 };
 
 export default function RootLayout({
