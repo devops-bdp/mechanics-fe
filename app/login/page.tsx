@@ -8,7 +8,7 @@ import { setTokenAndUser } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [emailOrNrp, setEmailOrNrp] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await apiClient.login(email, password);
+      const response = await apiClient.login(emailOrNrp, password);
       
       if (response.success && response.data) {
         // Store token in localStorage and decode it to extract user info
@@ -60,19 +60,19 @@ export default function LoginPage() {
 
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email address
+              <label htmlFor="emailOrNrp" className="block text-sm font-medium text-gray-700 mb-1">
+                Email atau NRP
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
+                id="emailOrNrp"
+                name="emailOrNrp"
+                type="text"
+                autoComplete="username"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={emailOrNrp}
+                onChange={(e) => setEmailOrNrp(e.target.value)}
                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
+                placeholder="Masukkan email atau NRP"
               />
             </div>
             

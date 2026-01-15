@@ -47,9 +47,9 @@ class ApiClient {
   }
 
   // Auth endpoints
-  async login(email: string, password: string) {
+  async login(emailOrNrp: string, password: string) {
     const response = await this.client.post("/api/auth/login", {
-      email,
+      emailOrNrp,
       password,
     });
     return response.data;
