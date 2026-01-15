@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
                         cy="50%"
                         labelLine={false}
                         label={({ name, percent }) =>
-                          `${name}: ${(percent * 100).toFixed(0)}%`
+                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
                         }
                         outerRadius={80}
                         fill="#8884d8"
@@ -260,7 +260,7 @@ export default function AnalyticsPage() {
                         cy="50%"
                         labelLine={false}
                         label={({ name, percent }) =>
-                          `${name}: ${(percent * 100).toFixed(0)}%`
+                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
                         }
                         outerRadius={80}
                         fill="#8884d8"
@@ -338,7 +338,7 @@ export default function AnalyticsPage() {
                         cy="50%"
                         labelLine={false}
                         label={({ name, percent }) =>
-                          `${name}: ${(percent * 100).toFixed(0)}%`
+                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
                         }
                         outerRadius={80}
                         fill="#8884d8"
@@ -378,7 +378,7 @@ export default function AnalyticsPage() {
                         cy="50%"
                         labelLine={false}
                         label={({ name, percent }) =>
-                          `${name}: ${(percent * 100).toFixed(0)}%`
+                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
                         }
                         outerRadius={80}
                         fill="#8884d8"
@@ -477,7 +477,7 @@ export default function AnalyticsPage() {
                           tick={{ fontSize: 12 }}
                         />
                         <Tooltip
-                          formatter={(value: any, name: string) => {
+                          formatter={(value: any, name?: string) => {
                             if (name === "totalActivities") {
                               return [`${value} activities`, "Activity Count"];
                             }
@@ -557,7 +557,7 @@ export default function AnalyticsPage() {
                           tick={{ fontSize: 12 }}
                         />
                         <Tooltip
-                          formatter={(value: any, name: string) => {
+                          formatter={(value: any, name?: string) => {
                             if (name === "workTimeHours") {
                               const mechanic = mechanicsAnalytics.topByWorkTime.find(
                                 (m) => Math.floor(m.totalWorkTimeSeconds / 3600) === value

@@ -254,9 +254,12 @@ class ApiClient {
   async updateUnit(
     id: string,
     data: {
-      name?: string;
-      model?: string;
-      serialNumber?: string;
+      unitType?: string;
+      unitBrand?: string;
+      unitCode?: string;
+      unitDescription?: string;
+      unitImage?: string;
+      unitStatus?: string;
     }
   ) {
     const response = await this.client.put(`/api/units/${id}`, data);

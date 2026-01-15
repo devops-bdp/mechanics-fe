@@ -74,6 +74,7 @@ export default function DashboardPage() {
           workTimes: totalTasks, // Total number of tasks across all activities
           activities: activitiesData.length || 0,
           activeActivities: activeActivities,
+          totalPopulation: 0, // Not applicable for mechanics
         });
         setActivities(activitiesData.slice(0, 5)); // Show latest 5 activities
         setTotalWorkTime(totalWT); // Total time in minutes from all tasks
