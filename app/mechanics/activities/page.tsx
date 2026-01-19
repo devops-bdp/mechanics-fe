@@ -810,24 +810,30 @@ function ActivityDetailModal({
                       );
                     })}
                 </div>
-                {userTasks.some((t) => t.startedAt) && (
-                  <div className="mt-4 pt-4 border-t-2 border-gray-300">
-                    <div className="flex justify-between items-center bg-gradient-to-r from-indigo-50 to-blue-50 p-3 rounded-lg border border-indigo-200">
-                      <span className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                        <span>📊</span> Total Task Time:
-                        <span className="text-xs font-normal text-gray-500">(Sum of all tasks in this activity)</span>
-                      </span>
-                      <span className="text-lg font-extrabold text-indigo-700">
-                        {formatTime(
-                          userTasks.reduce(
-                            (sum, task) => sum + calculateTaskTime(task),
-                            0
-                          )
-                        )}
-                      </span>
+                {userTasks.some((t) => t.startedAt) && (() => {
+                  const totalTaskTimeSeconds = userTasks.reduce(
+                    (sum, task) => sum + calculateTaskTimeInSeconds(task),
+                    0
+                  );
+                  return (
+                    <div className="mt-4 pt-4 border-t-2 border-gray-300">
+                      <div className="flex justify-between items-center bg-gradient-to-r from-indigo-50 to-blue-50 p-3 rounded-lg border border-indigo-200">
+                        <span className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                          <span>📊</span> Total Task Time:
+                          <span className="text-xs font-normal text-gray-500">(Sum of all tasks in this activity)</span>
+                        </span>
+                        <div className="text-right">
+                          <span className="text-lg font-extrabold text-indigo-700">
+                            {formatTimeDetailed(totalTaskTimeSeconds)}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            ({totalTaskTimeSeconds}s total)
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             )}
           </div>

@@ -176,16 +176,44 @@ export default function Navbar() {
               </>
             ) : null}
 
-            <Link
-              href="/profile"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/profile')
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Profile
-            </Link>
+            {/* Profile Picture & Profile Link */}
+            <div className="flex items-center space-x-3">
+              <Link
+                href="/profile"
+                className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-gray-100"
+              >
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name || 'Profile'}
+                    className="h-8 w-8 rounded-full object-cover border-2 border-gray-300"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                )}
+                <span className={`${
+                  isActive('/profile')
+                    ? 'text-primary-700'
+                    : 'text-gray-700'
+                }`}>
+                  Profile
+                </span>
+              </Link>
+            </div>
 
             <button
               onClick={handleLogout}
@@ -378,13 +406,36 @@ export default function Navbar() {
             <Link
               href="/profile"
               onClick={() => setIsMenuOpen(false)}
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
                 isActive('/profile')
                   ? 'bg-primary-100 text-primary-700'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              Profile
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name || 'Profile'}
+                  className="h-8 w-8 rounded-full object-cover border-2 border-gray-300"
+                />
+              ) : (
+                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+              )}
+              <span>Profile</span>
             </Link>
 
             <button

@@ -70,8 +70,20 @@ class ApiClient {
     return response.data;
   }
 
-  async updateProfile(data: { name?: string; phoneNumber?: string }) {
+  async updateProfile(data: { firstName?: string; lastName?: string; phoneNumber?: string }) {
     const response = await this.client.put("/api/auth/profile", data);
+    return response.data;
+  }
+
+  async uploadProfilePicture(file: File) {
+    const formData = new FormData();
+    formData.append("profilePicture", file);
+    
+    const response = await this.client.post("/api/auth/profile/picture", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   }
 

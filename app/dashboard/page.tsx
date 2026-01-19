@@ -154,13 +154,24 @@ export default function DashboardPage() {
           {/* Dashboard Header Section with Logo */}
           <div className="mb-8 rounded-xl p-6 bg-gray-50 border border-gray-200">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Dashboard
-                </h1>
-                <p className="mt-2 text-sm text-gray-600">
-                  Welcome back, {getUserName()}!
-                </p>
+              <div className="flex items-center space-x-4">
+                {user?.avatar && (
+                  <div className="flex-shrink-0">
+                    <img
+                      src={user.avatar}
+                      alt={user.name || 'Profile'}
+                      className="h-16 w-16 rounded-full object-cover border-4 border-white shadow-md"
+                    />
+                  </div>
+                )}
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    Dashboard
+                  </h1>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Welcome back, {getUserName()}!
+                  </p>
+                </div>
               </div>
               {user?.posisi === 'MEKANIK' && (
                 <div className="hidden sm:block flex-shrink-0 ml-4">

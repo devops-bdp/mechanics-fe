@@ -8,6 +8,7 @@ export interface User {
   role: string;
   posisi?: string;
   nrp?: number;
+  avatar?: string;
 }
 
 interface DecodedToken {
@@ -58,6 +59,7 @@ function extractUserFromToken(decoded: DecodedToken, userData?: any): User {
     role: decoded.role,
     posisi: decoded.posisi || userData?.posisi,
     nrp: decoded.nrp || userData?.nrp,
+    avatar: userData?.avatar,
   };
 }
 
@@ -103,6 +105,7 @@ export function setTokenAndUser(token: string, userData?: any): void {
       role: userData.role,
       posisi: userData.posisi,
       nrp: userData.nrp,
+      avatar: userData.avatar,
     });
   }
 }
