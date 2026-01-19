@@ -85,6 +85,11 @@ class ApiClient {
     return response.data;
   }
 
+  async bulkDeleteUsers(userIds: string[]) {
+    const response = await this.client.post("/api/superadmin/users/bulk-delete", { userIds });
+    return response.data;
+  }
+
   async updateProfile(data: { firstName?: string; lastName?: string; phoneNumber?: string }) {
     const response = await this.client.put("/api/auth/profile", data);
     return response.data;

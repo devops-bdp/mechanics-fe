@@ -23,6 +23,8 @@ export default function SuperAdminUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -65,6 +67,8 @@ export default function SuperAdminUsersPage() {
       if (response.success) {
         setUsers(response.data || []);
         setPagination(response.pagination || pagination);
+        // Clear selection when users change (e.g., pagination, filters)
+        setSelectedUsers(new Set());
       }
     } catch (error: any) {
       await showError(error.response?.data?.message || 'Failed to load users');
@@ -103,11 +107,67 @@ export default function SuperAdminUsersPage() {
       if (response.success) {
         await showSuccess('User deleted successfully!');
         loadUsers();
+        setSelectedUsers(new Set());
       } else {
         await showError(response.message || 'Failed to delete user');
       }
     } catch (error: any) {
       await showError(error.response?.data?.message || 'An error occurred');
+    }
+  };
+
+  const handleSelectUser = (userId: string) => {
+    const newSelected = new Set(selectedUsers);
+    if (newSelected.has(userId)) {
+      newSelected.delete(userId);
+    } else {
+      newSelected.add(userId);
+    }
+    setSelectedUsers(newSelected);
+  };
+
+  const handleSelectAll = () => {
+    if (selectedUsers.size === users.length) {
+      setSelectedUsers(new Set());
+    } else {
+      setSelectedUsers(new Set(users.map((u) => u.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedUsers.size === 0) {
+      await showError('Please select at least one user to delete');
+      return;
+    }
+
+    const result = await showConfirm(
+      `Are you sure you want to delete ${selectedUsers.size} user(s)? This action cannot be undone.`,
+      'Bulk Delete Users',
+      'Yes, delete them',
+      'Cancel'
+    );
+
+    if (!result.isConfirmed) return;
+
+    setIsBulkDeleting(true);
+
+    try {
+      const userIds = Array.from(selectedUsers);
+      const response = await apiClient.bulkDeleteUsers(userIds);
+
+      if (response.success) {
+        await showSuccess(
+          `Bulk delete completed! ${response.data.summary.successful} successful, ${response.data.summary.failed} failed.`
+        );
+        setSelectedUsers(new Set());
+        loadUsers();
+      } else {
+        await showError(response.message || 'Failed to delete users');
+      }
+    } catch (error: any) {
+      await showError(error.response?.data?.message || 'An error occurred');
+    } finally {
+      setIsBulkDeleting(false);
     }
   };
 
@@ -271,19 +331,51 @@ export default function SuperAdminUsersPage() {
             </div>
           ) : (
             <>
+              {/* Bulk Actions Bar */}
+              {selectedUsers.size > 0 && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-blue-900">
+                      {selectedUsers.size} user(s) selected
+                    </span>
+                    <button
+                      onClick={handleSelectAll}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      {selectedUsers.size === users.length ? 'Deselect All' : 'Select All'}
+                    </button>
+                  </div>
+                  <button
+                    onClick={handleBulkDelete}
+                    disabled={isBulkDeleting}
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isBulkDeleting ? 'Deleting...' : `Delete ${selectedUsers.size} User(s)`}
+                  </button>
+                </div>
+              )}
+
               <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul className="divide-y divide-gray-200">
                   {users.map((user) => (
                     <li key={user.id} className="px-4 py-4 sm:px-6">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {user.firstName} {user.lastName}
-                          </p>
-                          <p className="text-sm text-gray-500">{user.email}</p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            NRP: {user.nrp} | Role: {user.role} | Position: {user.posisi}
-                          </p>
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.has(user.id)}
+                            onChange={() => handleSelectUser(user.id)}
+                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {user.firstName} {user.lastName}
+                            </p>
+                            <p className="text-sm text-gray-500">{user.email}</p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              NRP: {user.nrp} | Role: {user.role} | Position: {user.posisi}
+                            </p>
+                          </div>
                         </div>
                         <div className="flex space-x-2">
                           <button
