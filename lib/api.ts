@@ -70,6 +70,21 @@ class ApiClient {
     return response.data;
   }
 
+  async bulkCreateUsers(users: Array<{
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    nrp: number;
+    role?: string;
+    posisi?: string;
+    phoneNumber?: string;
+    avatar?: string;
+  }>) {
+    const response = await this.client.post("/api/superadmin/users/bulk-create", { users });
+    return response.data;
+  }
+
   async updateProfile(data: { firstName?: string; lastName?: string; phoneNumber?: string }) {
     const response = await this.client.put("/api/auth/profile", data);
     return response.data;
