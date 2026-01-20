@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getToken, getUser } from '@/lib/auth';
+import { hasAccess } from '@/lib/access-control';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -28,25 +29,26 @@ export default function ProtectedRoute({
       return;
     }
 
-    // Check authorization: user must match EITHER allowedRoles OR allowedPosisi
-    let hasAccess = false;
+    // Check authorization using access control helper
+    const userHasAccess = hasAccess(
+      user.role,
+      user.posisi || '',
+      allowedRoles,
+      allowedPosisi
+    );
 
-    // If no restrictions specified, allow access
-    if (!allowedRoles && !allowedPosisi) {
-      hasAccess = true;
-    } else {
-      // Check if user has allowed role
-      if (allowedRoles && allowedRoles.includes(user.role)) {
-        hasAccess = true;
-      }
-
-      // Check if user has allowed posisi
-      if (allowedPosisi && user.posisi && allowedPosisi.includes(user.posisi)) {
-        hasAccess = true;
-      }
+    // Debug logging (remove in production)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('ProtectedRoute check:', {
+        userRole: user.role,
+        userPosisi: user.posisi,
+        allowedRoles,
+        allowedPosisi,
+        hasAccess: userHasAccess
+      });
     }
 
-    if (!hasAccess) {
+    if (!userHasAccess) {
       router.push('/dashboard');
       return;
     }

@@ -31,6 +31,13 @@ export default function DashboardPage() {
       router.push('/login');
       return;
     }
+    
+    // Redirect MANAGEMENT and DEPT_HEAD to management dashboard
+    if (currentUser.posisi === 'DEPT_HEAD' || currentUser.posisi === 'MANAGEMENT') {
+      router.push('/management/dashboard');
+      return;
+    }
+    
     setUser(currentUser);
     loadStats();
   }, [router]);

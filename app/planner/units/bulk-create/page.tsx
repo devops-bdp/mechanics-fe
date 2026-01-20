@@ -227,7 +227,7 @@ export default function BulkCreateUnitsPage() {
   };
 
   return (
-    <ProtectedRoute allowedPosisi={['PLANNER']} allowedRoles={['ADMIN', 'SUPERADMIN']}>
+    <ProtectedRoute allowedPosisi={['PLANNER', 'SUPERVISOR', 'DEPT_HEAD', 'MANAGEMENT']} allowedRoles={['ADMIN', 'SUPERADMIN']}>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

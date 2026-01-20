@@ -152,7 +152,7 @@ export default function MechanicDetailPage() {
   if (isLoading) {
     return (
       <ProtectedRoute
-        allowedPosisi={["PLANNER"]}
+        allowedPosisi={["PLANNER", "SUPERVISOR", "DEPT_HEAD", "MANAGEMENT"]}
         allowedRoles={["ADMIN", "SUPERADMIN"]}
       >
         <div className="min-h-screen bg-gray-50">
@@ -173,7 +173,7 @@ export default function MechanicDetailPage() {
   if (error || !mechanic) {
     return (
       <ProtectedRoute
-        allowedPosisi={["PLANNER"]}
+        allowedPosisi={["PLANNER", "SUPERVISOR", "DEPT_HEAD", "MANAGEMENT"]}
         allowedRoles={["ADMIN", "SUPERADMIN"]}
       >
         <div className="min-h-screen bg-gray-50">

@@ -136,7 +136,7 @@ export default function UnitReportDetailPage() {
   if (isLoading) {
     return (
       <ProtectedRoute
-        allowedPosisi={["PLANNER"]}
+        allowedPosisi={["PLANNER", "SUPERVISOR", "DEPT_HEAD", "MANAGEMENT"]}
         allowedRoles={["ADMIN", "SUPERADMIN"]}
       >
         <div className="min-h-screen bg-gray-50">
@@ -157,7 +157,7 @@ export default function UnitReportDetailPage() {
   if (error || !unit) {
     return (
       <ProtectedRoute
-        allowedPosisi={["PLANNER"]}
+        allowedPosisi={["PLANNER", "SUPERVISOR", "DEPT_HEAD", "MANAGEMENT"]}
         allowedRoles={["ADMIN", "SUPERADMIN"]}
       >
         <div className="min-h-screen bg-gray-50">

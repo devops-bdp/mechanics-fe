@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { getUser, logout } from '@/lib/auth';
+import { getEquivalentPosisi } from '@/lib/access-control';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,7 +56,7 @@ export default function Navbar() {
               Dashboard
             </Link>
 
-            {user.posisi === 'PLANNER' || user.role === 'ADMIN' || user.role === 'SUPERADMIN' ? (
+            {(getEquivalentPosisi(user.posisi || '') === 'PLANNER' || user.role === 'ADMIN' || user.role === 'SUPERADMIN' || getEquivalentPosisi(user.posisi || '') === 'SUPERADMIN') ? (
               <>
                 <Link
                   href="/planner/activities"
@@ -100,7 +101,7 @@ export default function Navbar() {
               </>
             ) : null}
 
-            {(user.posisi === 'GROUP_LEADER_MEKANIK' || user.posisi === 'GROUP_LEADER_TYRE') ? (
+            {getEquivalentPosisi(user.posisi || '') === 'GROUP_LEADER_MEKANIK' ? (
               <Link
                 href="/group-leader/activities"
                 className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
@@ -113,7 +114,7 @@ export default function Navbar() {
               </Link>
             ) : null}
 
-            {user.posisi === 'SUPERVISOR' ? (
+            {getEquivalentPosisi(user.posisi || '') === 'PLANNER' ? (
               <Link
                 href="/supervisor/activities"
                 className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
@@ -126,7 +127,7 @@ export default function Navbar() {
               </Link>
             ) : null}
 
-            {user.role === 'SUPERADMIN' && (
+            {(user.role === 'SUPERADMIN' || getEquivalentPosisi(user.posisi || '') === 'SUPERADMIN') && (
               <>
                 <Link
                   href="/superadmin/users"
@@ -152,7 +153,7 @@ export default function Navbar() {
               </>
             )}
 
-            {user.posisi === 'MEKANIK' ? (
+            {getEquivalentPosisi(user.posisi || '') === 'MEKANIK' ? (
               <>
                 <Link
                   href="/mechanics/activities/list"
@@ -275,7 +276,7 @@ export default function Navbar() {
               Dashboard
             </Link>
 
-            {user.posisi === 'PLANNER' || user.role === 'ADMIN' || user.role === 'SUPERADMIN' ? (
+            {(getEquivalentPosisi(user.posisi || '') === 'PLANNER' || user.role === 'ADMIN' || user.role === 'SUPERADMIN' || getEquivalentPosisi(user.posisi || '') === 'SUPERADMIN') ? (
               <>
                 <Link
                   href="/planner/activities"
@@ -324,7 +325,7 @@ export default function Navbar() {
               </>
             ) : null}
 
-            {(user.posisi === 'GROUP_LEADER_MEKANIK' || user.posisi === 'GROUP_LEADER_TYRE') ? (
+            {getEquivalentPosisi(user.posisi || '') === 'GROUP_LEADER_MEKANIK' ? (
               <Link
                 href="/group-leader/activities"
                 onClick={() => setIsMenuOpen(false)}
@@ -338,7 +339,7 @@ export default function Navbar() {
               </Link>
             ) : null}
 
-            {user.posisi === 'SUPERVISOR' ? (
+            {getEquivalentPosisi(user.posisi || '') === 'PLANNER' ? (
               <Link
                 href="/supervisor/activities"
                 onClick={() => setIsMenuOpen(false)}
@@ -352,7 +353,7 @@ export default function Navbar() {
               </Link>
             ) : null}
 
-            {user.role === 'SUPERADMIN' && (
+            {(user.role === 'SUPERADMIN' || getEquivalentPosisi(user.posisi || '') === 'SUPERADMIN') && (
               <>
                 <Link
                   href="/superadmin/users"
@@ -379,7 +380,7 @@ export default function Navbar() {
               </>
             )}
 
-            {user.posisi === 'MEKANIK' ? (
+            {getEquivalentPosisi(user.posisi || '') === 'MEKANIK' ? (
               <>
                 <Link
                   href="/mechanics/activities/list"

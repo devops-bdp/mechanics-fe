@@ -138,7 +138,7 @@ export default function PlannerActivitiesPage() {
 
   return (
     <ProtectedRoute
-      allowedPosisi={["PLANNER"]}
+      allowedPosisi={["PLANNER", "SUPERVISOR", "DEPT_HEAD", "MANAGEMENT"]}
       allowedRoles={["ADMIN", "SUPERADMIN"]}
     >
       <div className="min-h-screen bg-gray-50">

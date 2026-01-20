@@ -78,7 +78,7 @@ export default function CreateUserPage() {
   };
 
   return (
-    <ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMIN']}>
+    <ProtectedRoute allowedPosisi={["DEPT_HEAD", "MANAGEMENT"]} allowedRoles={['SUPERADMIN', 'ADMIN']}>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
