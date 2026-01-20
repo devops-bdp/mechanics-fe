@@ -6,38 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { apiClient } from "@/lib/api";
 import CreateUnitModal from "@/components/planner/CreateUnitModal";
 import EditUnitStatusModal from "@/components/planner/EditUnitStatusModal";
-
-const UNIT_TYPES = [
-  "PMVV",
-  "DT",
-  "LV",
-  "CT",
-  "WT",
-  "GENSET",
-  "OTHER",
-];
-
-const UNIT_BRANDS = [
-  "VOLVO",
-  "NISSAN",
-  "TOYOTA",
-  "MITSUBISHI",
-  "KOMATSU",
-  "LIEBHERR",
-  "ISUZU",
-  "DAIHATSU",
-  "KENT_POWER",
-  "SANY",
-  "JIEFANG",
-  "HYUNDAI",
-  "FUJI",
-  "YUCHAI",
-  "YANMAR",
-  "DONGFENG",
-  "OTHER",
-];
-
-const UNIT_STATUSES = ["ACTIVE", "BREAKDOWN", "INACTIVE"];
+import { UNIT_TYPES, UNIT_BRANDS, UNIT_STATUSES } from "@/lib/constants/enums";
 
 interface Unit {
   id: string;
@@ -150,12 +119,23 @@ export default function UnitsPage() {
                 Manage and view all units in the system
               </p>
             </div>
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 text-sm font-medium"
-            >
-              + Create Unit
-            </button>
+            <div className="flex gap-3">
+              <a
+                href="/planner/units/bulk-create"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Bulk Create
+              </a>
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 text-sm font-medium"
+              >
+                + Create Unit
+              </button>
+            </div>
           </div>
 
           {/* Filters */}

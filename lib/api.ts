@@ -283,6 +283,18 @@ class ApiClient {
     return response.data;
   }
 
+  async bulkCreateUnits(units: Array<{
+    unitType: string;
+    unitBrand: string;
+    unitCode: string;
+    unitDescription?: string;
+    unitImage?: string;
+    unitStatus?: string;
+  }>) {
+    const response = await this.client.post("/api/units/bulk-create", units);
+    return response.data;
+  }
+
   async updateUnit(
     id: string,
     data: {

@@ -3,38 +3,7 @@
 import { useState, FormEvent } from "react";
 import { apiClient } from "@/lib/api";
 import { showError, showSuccess } from "@/lib/swal";
-
-const UNIT_TYPES = [
-  "PMVV",
-  "DT",
-  "LV",
-  "CT",
-  "WT",
-  "GENSET",
-  "OTHER",
-];
-
-const UNIT_BRANDS = [
-  "VOLVO",
-  "NISSAN",
-  "TOYOTA",
-  "MITSUBISHI",
-  "KOMATSU",
-  "LIEBHERR",
-  "ISUZU",
-  "DAIHATSU",
-  "KENT_POWER",
-  "SANY",
-  "JIEFANG",
-  "HYUNDAI",
-  "FUJI",
-  "YUCHAI",
-  "YANMAR",
-  "DONGFENG",
-  "OTHER",
-];
-
-const UNIT_STATUSES = ["ACTIVE", "BREAKDOWN", "INACTIVE"];
+import { UNIT_TYPES, UNIT_BRANDS, UNIT_STATUSES } from "@/lib/constants/enums";
 
 interface CreateUnitModalProps {
   isOpen: boolean;
