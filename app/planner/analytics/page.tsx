@@ -19,9 +19,21 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+// Helper function to truncate long labels
+const truncateLabel = (str: string, maxLength: number = 15): string => {
+  if (str.length <= maxLength) return str;
+  return str.substring(0, maxLength) + '...';
+};
+
 interface ActivityAnalytics {
   byStatus: { status: string; count: number }[];
-  byType: { activityName: string; count: number }[];
+  byType: { 
+    activityName: string; 
+    count: number;
+    totalSeconds?: number;
+    totalHours?: number;
+    totalHoursFormatted?: string;
+  }[];
   monthlyTrend: { month: string; count: number; completed: number }[];
 }
 
@@ -202,7 +214,7 @@ export default function AnalyticsPage() {
                   Activities by Status
                 </h3>
                 {activityAnalytics?.byStatus && activityAnalytics.byStatus.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={350}>
                     <PieChart>
                       <Pie
                         data={activityAnalytics.byStatus.map((item) => ({
@@ -217,14 +229,19 @@ export default function AnalyticsPage() {
                           value: item.count,
                         }))}
                         cx="50%"
-                        cy="50%"
+                        cy="45%"
                         labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
-                        }
-                        outerRadius={80}
+                        label={({ name, percent }) => {
+                          // Only show label if percentage is >= 3% to avoid clutter
+                          if (percent && percent >= 0.03 && name) {
+                            return `${truncateLabel(name, 10)}: ${(percent * 100).toFixed(0)}%`;
+                          }
+                          return '';
+                        }}
+                        outerRadius={90}
                         fill="#8884d8"
                         dataKey="value"
+                        paddingAngle={1}
                       >
                         {activityAnalytics.byStatus.map((entry, index) => (
                           <Cell
@@ -233,7 +250,20 @@ export default function AnalyticsPage() {
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip 
+                        formatter={(value: any, name: any) => [
+                          `${value} activities`,
+                          name
+                        ]}
+                      />
+                      <Legend 
+                        verticalAlign="bottom" 
+                        height={60}
+                        formatter={(value) => value}
+                        wrapperStyle={{ fontSize: '10px' }}
+                        iconType="circle"
+                        layout="horizontal"
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
@@ -249,7 +279,7 @@ export default function AnalyticsPage() {
                   Activities by Type
                 </h3>
                 {activityAnalytics?.byType && activityAnalytics.byType.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={350}>
                     <PieChart>
                       <Pie
                         data={activityAnalytics.byType.map((item) => ({
@@ -257,14 +287,19 @@ export default function AnalyticsPage() {
                           value: item.count,
                         }))}
                         cx="50%"
-                        cy="50%"
+                        cy="45%"
                         labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
-                        }
-                        outerRadius={80}
+                        label={({ name, percent }) => {
+                          // Only show label if percentage is >= 3% to avoid clutter
+                          if (percent && percent >= 0.03 && name) {
+                            return `${truncateLabel(name, 10)}: ${(percent * 100).toFixed(0)}%`;
+                          }
+                          return '';
+                        }}
+                        outerRadius={90}
                         fill="#8884d8"
                         dataKey="value"
+                        paddingAngle={1}
                       >
                         {activityAnalytics.byType.map((entry, index) => (
                           <Cell
@@ -273,12 +308,86 @@ export default function AnalyticsPage() {
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip 
+                        formatter={(value: any, name: any) => [
+                          `${value} activities`,
+                          name
+                        ]}
+                      />
+                      <Legend 
+                        verticalAlign="bottom" 
+                        height={80}
+                        formatter={(value) => truncateLabel(value, 20)}
+                        wrapperStyle={{ fontSize: '10px' }}
+                        iconType="circle"
+                        layout="horizontal"
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
                   <div className="flex items-center justify-center h-64">
                     <p className="text-gray-500">No data available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Activity Time by Type Bar Chart */}
+              <div className="bg-white rounded-lg shadow-lg p-6 lg:col-span-2">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Total Time by Activity Type
+                </h3>
+                {activityAnalytics?.byType && activityAnalytics.byType.length > 0 && 
+                 activityAnalytics.byType.some(item => item.totalHours && item.totalHours > 0) ? (
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart 
+                      data={activityAnalytics.byType
+                        .filter(item => item.totalHours && item.totalHours > 0)
+                        .sort((a, b) => (b.totalHours || 0) - (a.totalHours || 0))
+                        .map((item) => ({
+                          name: formatActivityName(item.activityName),
+                          hours: item.totalHours || 0,
+                          formatted: item.totalHoursFormatted || '0h 0m 0s',
+                        }))}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="name" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={100}
+                        tick={{ fontSize: 11 }}
+                        interval={0}
+                        tickFormatter={(value) => truncateLabel(value, 15)}
+                      />
+                      <YAxis 
+                        label={{ value: 'Hours', angle: -90, position: 'insideLeft' }}
+                      />
+                      <Tooltip 
+                        formatter={(value: any, name: any, props: any) => [
+                          `${props.payload.formatted} (${parseFloat(value).toFixed(2)} hours)`,
+                          "Total Time"
+                        ]}
+                      />
+                      <Bar 
+                        dataKey="hours" 
+                        fill="#8b5cf6"
+                        radius={[4, 4, 0, 0]}
+                      >
+                        {activityAnalytics.byType
+                          .filter(item => item.totalHours && item.totalHours > 0)
+                          .map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-64">
+                    <p className="text-gray-500">No time data available</p>
                   </div>
                 )}
               </div>
@@ -291,9 +400,19 @@ export default function AnalyticsPage() {
                 {activityAnalytics?.monthlyTrend &&
                 activityAnalytics.monthlyTrend.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={activityAnalytics.monthlyTrend}>
+                    <BarChart 
+                      data={activityAnalytics.monthlyTrend}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                    >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
+                      <XAxis 
+                        dataKey="month" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        tick={{ fontSize: 11 }}
+                        interval={0}
+                      />
                       <YAxis />
                       <Tooltip />
                       <Legend />
@@ -327,22 +446,27 @@ export default function AnalyticsPage() {
                   Units by Status
                 </h3>
                 {unitAnalytics?.byStatus && unitAnalytics.byStatus.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={350}>
                     <PieChart>
                       <Pie
                         data={unitAnalytics.byStatus.map((item) => ({
-                          name: item.status,
+                          name: item.status.replace(/_/g, ' '),
                           value: item.count,
                         }))}
                         cx="50%"
-                        cy="50%"
+                        cy="45%"
                         labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
-                        }
-                        outerRadius={80}
+                        label={({ name, percent }) => {
+                          // Only show label if percentage is >= 3% to avoid clutter
+                          if (percent && percent >= 0.03 && name) {
+                            return `${truncateLabel(name, 10)}: ${(percent * 100).toFixed(0)}%`;
+                          }
+                          return '';
+                        }}
+                        outerRadius={90}
                         fill="#8884d8"
                         dataKey="value"
+                        paddingAngle={1}
                       >
                         {unitAnalytics.byStatus.map((entry, index) => (
                           <Cell
@@ -351,7 +475,20 @@ export default function AnalyticsPage() {
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip 
+                        formatter={(value: any, name: any) => [
+                          `${value} units`,
+                          name
+                        ]}
+                      />
+                      <Legend 
+                        verticalAlign="bottom" 
+                        height={60}
+                        formatter={(value) => value}
+                        wrapperStyle={{ fontSize: '10px' }}
+                        iconType="circle"
+                        layout="horizontal"
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
@@ -361,28 +498,38 @@ export default function AnalyticsPage() {
                 )}
               </div>
 
-              {/* Unit Type Pie Chart */}
+              {/* Unit Type Bar Chart */}
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Units by Type
                 </h3>
                 {unitAnalytics?.byType && unitAnalytics.byType.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={unitAnalytics.byType.map((item) => ({
-                          name: item.unitType,
-                          value: item.count,
-                        }))}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
-                        }
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart 
+                      data={unitAnalytics.byType.map((item) => ({
+                        name: item.unitType.replace(/_/g, ' '),
+                        count: item.count,
+                      }))}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="name" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={100}
+                        tick={{ fontSize: 11 }}
+                        interval={0}
+                        tickFormatter={(value) => truncateLabel(value, 15)}
+                      />
+                      <YAxis />
+                      <Tooltip 
+                        formatter={(value: any) => [`${value} units`, "Count"]}
+                      />
+                      <Bar 
+                        dataKey="count" 
+                        fill="#8b5cf6"
+                        radius={[4, 4, 0, 0]}
                       >
                         {unitAnalytics.byType.map((entry, index) => (
                           <Cell
@@ -390,9 +537,8 @@ export default function AnalyticsPage() {
                             fill={COLORS[index % COLORS.length]}
                           />
                         ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
+                      </Bar>
+                    </BarChart>
                   </ResponsiveContainer>
                 ) : (
                   <div className="flex items-center justify-center h-64">
@@ -408,9 +554,20 @@ export default function AnalyticsPage() {
                 </h3>
                 {unitAnalytics?.byBrand && unitAnalytics.byBrand.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={unitAnalytics.byBrand}>
+                    <BarChart 
+                      data={unitAnalytics.byBrand}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                    >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="unitBrand" />
+                      <XAxis 
+                        dataKey="unitBrand" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        tick={{ fontSize: 11 }}
+                        interval={0}
+                        tickFormatter={(value) => truncateLabel(value.replace(/_/g, ' '), 12)}
+                      />
                       <YAxis />
                       <Tooltip />
                       <Bar dataKey="count" fill="#3b82f6" />
@@ -431,9 +588,19 @@ export default function AnalyticsPage() {
                 {unitAnalytics?.byActivityCount &&
                 unitAnalytics.byActivityCount.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={unitAnalytics.byActivityCount}>
+                    <BarChart 
+                      data={unitAnalytics.byActivityCount}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                    >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="range" />
+                      <XAxis 
+                        dataKey="range" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        tick={{ fontSize: 11 }}
+                        interval={0}
+                      />
                       <YAxis />
                       <Tooltip />
                       <Bar dataKey="count" fill="#10b981" />
@@ -467,14 +634,27 @@ export default function AnalyticsPage() {
                       <BarChart
                         data={mechanicsAnalytics.topByActivities}
                         layout="vertical"
+                        margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
+                        <XAxis 
+                          type="number" 
+                          domain={[0, () => {
+                            // Get the max value from top 1 (first item) - already sorted by activity count
+                            if (mechanicsAnalytics.topByActivities.length > 0) {
+                              const top1Count = mechanicsAnalytics.topByActivities[0].totalActivities;
+                              // Round up to nearest 5 for cleaner scale
+                              return Math.ceil((top1Count + 1) / 5) * 5;
+                            }
+                            return 'auto';
+                          }]}
+                        />
                         <YAxis
                           type="category"
                           dataKey="name"
                           width={120}
-                          tick={{ fontSize: 12 }}
+                          tick={{ fontSize: 11 }}
+                          tickFormatter={(value) => truncateLabel(value, 20)}
                         />
                         <Tooltip
                           formatter={(value: any, name?: string) => {
@@ -547,14 +727,27 @@ export default function AnalyticsPage() {
                           workTimeHours: Math.floor(m.totalWorkTimeSeconds / 3600),
                         }))}
                         layout="vertical"
+                        margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
+                        <XAxis 
+                          type="number" 
+                          domain={[0, () => {
+                            // Get the max value from top 1 (first item) - already sorted by work time
+                            if (mechanicsAnalytics.topByWorkTime.length > 0) {
+                              const top1Hours = Math.floor(mechanicsAnalytics.topByWorkTime[0].totalWorkTimeSeconds / 3600);
+                              // Round up to nearest 10 for cleaner scale
+                              return Math.ceil((top1Hours + 1) / 10) * 10;
+                            }
+                            return 'auto';
+                          }]}
+                        />
                         <YAxis
                           type="category"
                           dataKey="name"
                           width={120}
-                          tick={{ fontSize: 12 }}
+                          tick={{ fontSize: 11 }}
+                          tickFormatter={(value) => truncateLabel(value, 20)}
                         />
                         <Tooltip
                           formatter={(value: any, name?: string) => {
