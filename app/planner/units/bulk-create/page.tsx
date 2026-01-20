@@ -112,13 +112,13 @@ export default function BulkCreateUnitsPage() {
       if (!unit.unitType || !unit.unitBrand || !unit.unitCode) {
         errors.push(`Row ${index + 1}: Missing required fields (unitType, unitBrand, unitCode).`);
       }
-      if (unit.unitType && !UNIT_TYPES.includes(unit.unitType)) {
+      if (unit.unitType && !(UNIT_TYPES as readonly string[]).includes(unit.unitType)) {
         errors.push(`Row ${index + 1}: Invalid unitType. Valid types are: ${UNIT_TYPES.join(', ')}`);
       }
-      if (unit.unitBrand && !UNIT_BRANDS.includes(unit.unitBrand)) {
+      if (unit.unitBrand && !(UNIT_BRANDS as readonly string[]).includes(unit.unitBrand)) {
         errors.push(`Row ${index + 1}: Invalid unitBrand. Valid brands are: ${UNIT_BRANDS.join(', ')}`);
       }
-      if (unit.unitStatus && !UNIT_STATUSES.includes(unit.unitStatus)) {
+      if (unit.unitStatus && !(UNIT_STATUSES as readonly string[]).includes(unit.unitStatus)) {
         errors.push(`Row ${index + 1}: Invalid unitStatus. Valid statuses are: ${UNIT_STATUSES.join(', ')}`);
       }
     });
