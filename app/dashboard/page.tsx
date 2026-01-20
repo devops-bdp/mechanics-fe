@@ -152,42 +152,42 @@ export default function DashboardPage() {
         <Navbar />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Dashboard Header Section with Logo */}
-          <div className="mb-8 rounded-xl p-6 bg-gray-50 border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+          <div className="mb-6 sm:mb-8 rounded-xl p-4 sm:p-6 bg-gray-50 border border-gray-200">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
                 {user?.avatar && (
                   <div className="flex-shrink-0">
                     <img
                       src={user.avatar}
                       alt={user.name || 'Profile'}
-                      className="h-16 w-16 rounded-full object-cover border-4 border-white shadow-md"
+                      className="h-12 w-12 sm:h-16 sm:w-16 rounded-full object-cover border-2 sm:border-4 border-white shadow-md"
                     />
                   </div>
                 )}
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 truncate">
                     Dashboard
                   </h1>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-600 truncate">
                     Welcome back, {getUserName()}!
                   </p>
                 </div>
               </div>
               {user?.posisi === 'MEKANIK' && (
-                <div className="hidden sm:block flex-shrink-0 ml-4">
+                <div className="hidden sm:block flex-shrink-0 ml-2 sm:ml-4">
                   <img 
                     src="/mechanicsBG.png" 
                     alt="Mechanic Logo" 
-                    className="h-24 w-auto object-contain"
+                    className="h-16 sm:h-20 lg:h-24 w-auto object-contain"
                   />
                 </div>
               )}
               {(user?.posisi === 'PLANNER' || user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                <div className="hidden sm:block flex-shrink-0 ml-4">
+                <div className="hidden sm:block flex-shrink-0 ml-2 sm:ml-4">
                   <img 
                     src="/plannerBG.png" 
                     alt="Planner Logo" 
-                    className="h-24 w-auto object-contain"
+                    className="h-16 sm:h-20 lg:h-24 w-auto object-contain"
                   />
                 </div>
               )}
@@ -202,64 +202,64 @@ export default function DashboardPage() {
             <>
               {/* Performance Dashboard for Mechanics - Mobile First */}
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Performance Overview</h2>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Performance Overview</h2>
+                <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
                   {/* Total Work Time */}
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <svg className="w-6 h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-white shadow-lg">
+                    <div className="flex items-center justify-between mb-1 sm:mb-2">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <p className="text-xs sm:text-sm opacity-90 mb-1">Total Work Time</p>
-                    <p className="text-xs opacity-75 mb-1">(Sum of all tasks from all activities)</p>
-                    <p className="text-lg sm:text-2xl font-bold">
+                    <p className="text-[10px] sm:text-xs lg:text-sm opacity-90 mb-0.5 sm:mb-1">Total Work Time</p>
+                    <p className="text-[9px] sm:text-xs opacity-75 mb-1 hidden sm:block">(Sum of all tasks from all activities)</p>
+                    <p className="text-base sm:text-lg lg:text-2xl font-bold">
                       {Math.floor(totalWorkTime / 60)}h {totalWorkTime % 60}m
                     </p>
                   </div>
 
                   {/* Completed Activities */}
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 text-white shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <svg className="w-6 h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-white shadow-lg">
+                    <div className="flex items-center justify-between mb-1 sm:mb-2">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <p className="text-xs sm:text-sm opacity-90 mb-1">Completed</p>
-                    <p className="text-lg sm:text-2xl font-bold">{completedActivities}</p>
+                    <p className="text-[10px] sm:text-xs lg:text-sm opacity-90 mb-0.5 sm:mb-1">Completed</p>
+                    <p className="text-base sm:text-lg lg:text-2xl font-bold">{completedActivities}</p>
                   </div>
 
                   {/* Active Activities */}
-                  <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-4 text-white shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <svg className="w-6 h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-white shadow-lg">
+                    <div className="flex items-center justify-between mb-1 sm:mb-2">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    <p className="text-xs sm:text-sm opacity-90 mb-1">Active</p>
-                    <p className="text-lg sm:text-2xl font-bold">{stats.activeActivities}</p>
+                    <p className="text-[10px] sm:text-xs lg:text-sm opacity-90 mb-0.5 sm:mb-1">Active</p>
+                    <p className="text-base sm:text-lg lg:text-2xl font-bold">{stats.activeActivities}</p>
                   </div>
 
                   {/* Total Activities */}
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <svg className="w-6 h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-white shadow-lg">
+                    <div className="flex items-center justify-between mb-1 sm:mb-2">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
                     </div>
-                    <p className="text-xs sm:text-sm opacity-90 mb-1">Total Tasks</p>
-                    <p className="text-lg sm:text-2xl font-bold">{stats.activities}</p>
+                    <p className="text-[10px] sm:text-xs lg:text-sm opacity-90 mb-0.5 sm:mb-1">Total Tasks</p>
+                    <p className="text-base sm:text-lg lg:text-2xl font-bold">{stats.activities}</p>
                   </div>
                 </div>
               </div>
 
               {/* Assigned Activities */}
               <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">Assigned Activities</h2>
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">Assigned Activities</h2>
                   <a
                     href="/mechanics/activities"
-                    className="text-sm text-primary-600 font-medium hover:text-primary-700"
+                    className="text-xs sm:text-sm text-primary-600 font-medium hover:text-primary-700"
                   >
                     View All
                   </a>
@@ -337,9 +337,9 @@ export default function DashboardPage() {
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Quick Actions</h3>
-                <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm border border-gray-200">
+                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">Quick Actions</h3>
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <a
                     href="/mechanics/activities"
                     className="flex flex-col items-center justify-center p-4 bg-primary-50 rounded-lg border border-primary-200 hover:bg-primary-100 active:scale-95 transition-all"

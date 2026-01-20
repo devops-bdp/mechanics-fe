@@ -24,29 +24,29 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <div className="flex-shrink-0 min-w-0">
+            <Link href="/dashboard" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
               <Image
                 src="/NavLogo.png"
                 alt="Mechanic Activity Report Logo"
-                width={40}
-                height={40}
-                className="object-contain"
+                width={32}
+                height={32}
+                className="object-contain sm:w-10 sm:h-10"
               />
-              <span className="text-lg font-bold text-primary-600 hidden sm:inline">
-                Mechanic Activity Report
-              </span>
-              <span className="text-lg font-bold text-primary-600 sm:hidden">
+              <span className="text-sm sm:text-lg font-bold text-primary-600 hidden xs:inline sm:hidden">
                 MAR
+              </span>
+              <span className="text-base sm:text-lg font-bold text-primary-600 hidden sm:inline">
+                Mechanic Activity Report
               </span>
             </Link>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex md:items-center md:space-x-4">
+          <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
             <Link
               href="/dashboard"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                 isActive('/dashboard')
                   ? 'bg-primary-100 text-primary-700'
                   : 'text-gray-700 hover:bg-gray-100'
@@ -59,7 +59,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/planner/activities"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/planner/activities')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
@@ -69,7 +69,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/planner/units"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/planner/units')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
@@ -79,7 +79,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/planner/reports"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/planner/reports') || pathname.startsWith('/planner/reports')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
@@ -89,7 +89,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/planner/analytics"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/planner/analytics')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
@@ -103,7 +103,7 @@ export default function Navbar() {
             {(user.posisi === 'GROUP_LEADER_MEKANIK' || user.posisi === 'GROUP_LEADER_TYRE') ? (
               <Link
                 href="/group-leader/activities"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                   isActive('/group-leader/activities')
                     ? 'bg-primary-100 text-primary-700'
                     : 'text-gray-700 hover:bg-gray-100'
@@ -116,7 +116,7 @@ export default function Navbar() {
             {user.posisi === 'SUPERVISOR' ? (
               <Link
                 href="/supervisor/activities"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                   isActive('/supervisor/activities')
                     ? 'bg-primary-100 text-primary-700'
                     : 'text-gray-700 hover:bg-gray-100'
@@ -130,7 +130,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/superadmin/users"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/superadmin/users')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
@@ -140,13 +140,14 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/superadmin/dashboard"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/superadmin/dashboard')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  Admin Dashboard
+                  <span className="hidden xl:inline">Admin Dashboard</span>
+                  <span className="xl:hidden">Admin</span>
                 </Link>
               </>
             )}
@@ -155,43 +156,45 @@ export default function Navbar() {
               <>
                 <Link
                   href="/mechanics/activities/list"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/mechanics/activities/list')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  List Activities
+                  <span className="hidden xl:inline">List Activities</span>
+                  <span className="xl:hidden">List</span>
                 </Link>
                 <Link
                   href="/mechanics/activities"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                     isActive('/mechanics/activities')
                       ? 'bg-primary-100 text-primary-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  My Activities
+                  <span className="hidden xl:inline">My Activities</span>
+                  <span className="xl:hidden">My</span>
                 </Link>
               </>
             ) : null}
 
             {/* Profile Picture & Profile Link */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <Link
                 href="/profile"
-                className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-gray-100"
+                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-gray-100"
               >
                 {user.avatar ? (
                   <img
                     src={user.avatar}
                     alt={user.name || 'Profile'}
-                    className="h-8 w-8 rounded-full object-cover border-2 border-gray-300"
+                    className="h-7 w-7 sm:h-8 sm:w-8 rounded-full object-cover border-2 border-gray-300"
                   />
                 ) : (
-                  <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                  <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
                     <svg
-                      className="h-5 w-5 text-gray-400"
+                      className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -205,7 +208,7 @@ export default function Navbar() {
                     </svg>
                   </div>
                 )}
-                <span className={`${
+                <span className={`hidden lg:inline ${
                   isActive('/profile')
                     ? 'text-primary-700'
                     : 'text-gray-700'
@@ -217,14 +220,14 @@ export default function Navbar() {
 
             <button
               onClick={handleLogout}
-              className="px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+              className="px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
             >
               Logout
             </button>
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none"
@@ -258,7 +261,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-200">
+        <div className="lg:hidden border-t border-gray-200 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               href="/dashboard"
