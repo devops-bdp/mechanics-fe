@@ -109,17 +109,43 @@ export default function BulkCreateUnitsPage() {
     // Frontend validation before sending to backend
     const errors: string[] = [];
     dataToSubmit.forEach((unit, index) => {
+      const rowNum = index + 1;
+      
       if (!unit.unitType || !unit.unitBrand || !unit.unitCode) {
-        errors.push(`Row ${index + 1}: Missing required fields (unitType, unitBrand, unitCode).`);
+        errors.push(`Row ${rowNum}: Missing required fields (unitType, unitBrand, unitCode).`);
       }
-      if (unit.unitType && !(UNIT_TYPES as readonly string[]).includes(unit.unitType)) {
-        errors.push(`Row ${index + 1}: Invalid unitType. Valid types are: ${UNIT_TYPES.join(', ')}`);
+      
+      // Normalize and validate unitType
+      if (unit.unitType) {
+        const normalizedUnitType = String(unit.unitType).trim().toUpperCase();
+        if (!(UNIT_TYPES as readonly string[]).includes(normalizedUnitType)) {
+          errors.push(`Row ${rowNum}: Invalid unitType "${unit.unitType}". Valid types are: ${UNIT_TYPES.join(', ')}`);
+        } else {
+          // Update to normalized value
+          unit.unitType = normalizedUnitType;
+        }
       }
-      if (unit.unitBrand && !(UNIT_BRANDS as readonly string[]).includes(unit.unitBrand)) {
-        errors.push(`Row ${index + 1}: Invalid unitBrand. Valid brands are: ${UNIT_BRANDS.join(', ')}`);
+      
+      // Normalize and validate unitBrand
+      if (unit.unitBrand) {
+        const normalizedUnitBrand = String(unit.unitBrand).trim().toUpperCase();
+        if (!(UNIT_BRANDS as readonly string[]).includes(normalizedUnitBrand)) {
+          errors.push(`Row ${rowNum}: Invalid unitBrand "${unit.unitBrand}". Valid brands are: ${UNIT_BRANDS.join(', ')}`);
+        } else {
+          // Update to normalized value
+          unit.unitBrand = normalizedUnitBrand;
+        }
       }
-      if (unit.unitStatus && !(UNIT_STATUSES as readonly string[]).includes(unit.unitStatus)) {
-        errors.push(`Row ${index + 1}: Invalid unitStatus. Valid statuses are: ${UNIT_STATUSES.join(', ')}`);
+      
+      // Normalize and validate unitStatus
+      if (unit.unitStatus) {
+        const normalizedUnitStatus = String(unit.unitStatus).trim().toUpperCase();
+        if (!(UNIT_STATUSES as readonly string[]).includes(normalizedUnitStatus)) {
+          errors.push(`Row ${rowNum}: Invalid unitStatus "${unit.unitStatus}". Valid statuses are: ${UNIT_STATUSES.join(', ')}`);
+        } else {
+          // Update to normalized value
+          unit.unitStatus = normalizedUnitStatus;
+        }
       }
     });
 
@@ -131,12 +157,12 @@ export default function BulkCreateUnitsPage() {
 
     try {
       const response = await apiClient.bulkCreateUnits(dataToSubmit.map(unit => ({
-        unitType: unit.unitType,
-        unitBrand: unit.unitBrand,
-        unitCode: unit.unitCode,
-        unitDescription: unit.unitDescription || undefined,
-        unitImage: unit.unitImage || undefined,
-        unitStatus: unit.unitStatus || 'ACTIVE',
+        unitType: String(unit.unitType).trim().toUpperCase(),
+        unitBrand: String(unit.unitBrand).trim().toUpperCase(),
+        unitCode: String(unit.unitCode).trim(),
+        unitDescription: unit.unitDescription ? String(unit.unitDescription).trim() : undefined,
+        unitImage: unit.unitImage ? String(unit.unitImage).trim() : undefined,
+        unitStatus: unit.unitStatus ? String(unit.unitStatus).trim().toUpperCase() : 'ACTIVE',
       })));
 
       if (response.success) {
