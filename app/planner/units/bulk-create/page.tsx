@@ -9,6 +9,45 @@ import { showError, showSuccess } from '@/lib/swal';
 import Papa from 'papaparse';
 import { UNIT_TYPES, UNIT_BRANDS, UNIT_STATUSES } from '@/lib/constants/enums';
 
+// Mapping untuk variasi nama yang umum
+const UNIT_BRAND_MAPPING: Record<string, string> = {
+  'AIMIX': 'AMIX',
+  'PRO-QUIP': 'PRO_QUIP',
+  'PRO QUIP': 'PRO_QUIP',
+  'KENT POWER': 'KENT_POWER',
+  'KENT-POWER': 'KENT_POWER',
+  'KAESER COMPRESSORS': 'KAESER',
+  'KAESER COMPRESSOR': 'KAESER',
+};
+
+const UNIT_TYPE_MAPPING: Record<string, string> = {
+  'AIR_COMPRESSOR': 'AIR_COMPRESSSOR', // Note: 3 S in schema
+  'AIR-COMPRESSOR': 'AIR_COMPRESSSOR',
+  'AIR COMPRESSOR': 'AIR_COMPRESSSOR',
+  'FT': 'OTHER', // FT tidak ada di enum, mapping ke OTHER
+};
+
+// Helper function untuk normalisasi dan mapping
+function normalizeUnitBrand(value: string): string {
+  const normalized = String(value).trim().toUpperCase();
+  // Cek mapping dulu
+  if (UNIT_BRAND_MAPPING[normalized]) {
+    return UNIT_BRAND_MAPPING[normalized];
+  }
+  // Replace spasi dan dash dengan underscore
+  return normalized.replace(/[\s-]/g, '_');
+}
+
+function normalizeUnitType(value: string): string {
+  const normalized = String(value).trim().toUpperCase();
+  // Cek mapping dulu
+  if (UNIT_TYPE_MAPPING[normalized]) {
+    return UNIT_TYPE_MAPPING[normalized];
+  }
+  // Replace spasi dan dash dengan underscore
+  return normalized.replace(/[\s-]/g, '_');
+}
+
 interface UnitData {
   unitType: string;
   unitBrand: string;
@@ -117,9 +156,9 @@ export default function BulkCreateUnitsPage() {
       
       // Normalize and validate unitType
       if (unit.unitType) {
-        const normalizedUnitType = String(unit.unitType).trim().toUpperCase();
+        const normalizedUnitType = normalizeUnitType(unit.unitType);
         if (!(UNIT_TYPES as readonly string[]).includes(normalizedUnitType)) {
-          errors.push(`Row ${rowNum}: Invalid unitType "${unit.unitType}". Valid types are: ${UNIT_TYPES.join(', ')}`);
+          errors.push(`Row ${rowNum}: Invalid unitType "${unit.unitType}" (normalized: "${normalizedUnitType}"). Valid types are: ${UNIT_TYPES.join(', ')}`);
         } else {
           // Update to normalized value
           unit.unitType = normalizedUnitType;
@@ -128,9 +167,9 @@ export default function BulkCreateUnitsPage() {
       
       // Normalize and validate unitBrand
       if (unit.unitBrand) {
-        const normalizedUnitBrand = String(unit.unitBrand).trim().toUpperCase();
+        const normalizedUnitBrand = normalizeUnitBrand(unit.unitBrand);
         if (!(UNIT_BRANDS as readonly string[]).includes(normalizedUnitBrand)) {
-          errors.push(`Row ${rowNum}: Invalid unitBrand "${unit.unitBrand}". Valid brands are: ${UNIT_BRANDS.join(', ')}`);
+          errors.push(`Row ${rowNum}: Invalid unitBrand "${unit.unitBrand}" (normalized: "${normalizedUnitBrand}"). Valid brands are: ${UNIT_BRANDS.join(', ')}`);
         } else {
           // Update to normalized value
           unit.unitBrand = normalizedUnitBrand;

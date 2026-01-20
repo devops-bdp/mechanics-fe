@@ -6,6 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { apiClient } from "@/lib/api";
 import CreateUnitModal from "@/components/planner/CreateUnitModal";
 import EditUnitStatusModal from "@/components/planner/EditUnitStatusModal";
+import EditUnitModal from "@/components/planner/EditUnitModal";
 import { UNIT_TYPES, UNIT_BRANDS, UNIT_STATUSES } from "@/lib/constants/enums";
 
 interface Unit {
@@ -26,6 +27,7 @@ export default function UnitsPage() {
   const [error, setError] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditStatusModalOpen, setIsEditStatusModalOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
 
   // Filter states
@@ -54,8 +56,8 @@ export default function UnitsPage() {
       const params: any = {
         page: currentPage,
         limit,
-        sortBy: "createdAt",
-        sortOrder: "desc",
+        sortBy: "unitCode",
+        sortOrder: "asc",
       };
 
       if (filters.status) params.status = filters.status;
@@ -103,8 +105,14 @@ export default function UnitsPage() {
     setIsEditModalOpen(true);
   };
 
+  const handleEditStatusClick = (unit: Unit) => {
+    setSelectedUnit(unit);
+    setIsEditStatusModalOpen(true);
+  };
+
   const handleEditSuccess = () => {
     loadUnits();
+    setSelectedUnit(null);
   };
 
   return (
@@ -266,6 +274,9 @@ export default function UnitsPage() {
                         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                           Created At
                         </th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -281,12 +292,12 @@ export default function UnitsPage() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">
-                              {unit.unitType}
+                              {unit.unitType.replace(/_/g, ' ')}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">
-                              {unit.unitBrand}
+                              {unit.unitBrand.replace(/_/g, ' ')}
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -313,13 +324,21 @@ export default function UnitsPage() {
                               {new Date(unit.createdAt).toLocaleTimeString()}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-center">
-                            <button
-                              onClick={() => handleEditClick(unit)}
-                              className="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
-                            >
-                              Edit Status
-                            </button>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => handleEditClick(unit)}
+                                className="px-3 py-1.5 text-xs font-semibold text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg border border-primary-200 transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleEditStatusClick(unit)}
+                                className="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                              >
+                                Status
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -373,12 +392,23 @@ export default function UnitsPage() {
             onSuccess={handleCreateSuccess}
           />
 
-          {/* Edit Unit Status Modal */}
-          <EditUnitStatusModal
+          {/* Edit Unit Modal */}
+          <EditUnitModal
             isOpen={isEditModalOpen}
             unit={selectedUnit}
             onClose={() => {
               setIsEditModalOpen(false);
+              setSelectedUnit(null);
+            }}
+            onSuccess={handleEditSuccess}
+          />
+
+          {/* Edit Unit Status Modal */}
+          <EditUnitStatusModal
+            isOpen={isEditStatusModalOpen}
+            unit={selectedUnit}
+            onClose={() => {
+              setIsEditStatusModalOpen(false);
               setSelectedUnit(null);
             }}
             onSuccess={handleEditSuccess}
