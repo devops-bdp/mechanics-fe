@@ -43,7 +43,9 @@ export default function ActivityFormModal({
         <form onSubmit={onSubmit} className="px-6 py-4">
           {error && (
             <div className="mb-4 rounded-md bg-red-50 p-3">
-              <div className="text-sm text-red-800 whitespace-pre-line">{error}</div>
+              <div className="text-sm text-red-800 whitespace-pre-line">
+                {error}
+              </div>
             </div>
           )}
           <div className="space-y-4">
@@ -58,7 +60,10 @@ export default function ActivityFormModal({
                 id="activityName"
                 value={formData.activityName}
                 onChange={(e) =>
-                  onFormDataChange({ ...formData, activityName: e.target.value })
+                  onFormDataChange({
+                    ...formData,
+                    activityName: e.target.value,
+                  })
                 }
                 required
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
@@ -117,21 +122,36 @@ export default function ActivityFormModal({
               >
                 <option value="">Select a unit</option>
                 {units
-                  .filter((unit) => unit.unitStatus === "BREAKDOWN" || unit.unitStatus === "INACTIVE")
+                  .filter(
+                    (unit) =>
+                      unit.unitStatus === "BREAKDOWN" ||
+                      unit.unitStatus === "INACTIVE",
+                  )
                   .map((unit) => (
                     <option key={unit.id} value={unit.id}>
-                      {unit.unitCode} - {unit.unitType} ({unit.unitBrand}) - {unit.unitStatus}
+                      {unit.unitCode} - {unit.unitType} ({unit.unitBrand}) -{" "}
+                      {unit.unitStatus}
                     </option>
                   ))}
               </select>
-              {units.filter((unit) => unit.unitStatus === "BREAKDOWN" || unit.unitStatus === "INACTIVE").length === 0 && (
+              {units.filter(
+                (unit) =>
+                  unit.unitStatus === "BREAKDOWN" ||
+                  unit.unitStatus === "INACTIVE",
+              ).length === 0 && (
                 <p className="mt-2 text-xs text-amber-600 bg-amber-50 p-2 rounded">
-                  ⚠️ No units with BREAKDOWN or INACTIVE status available. Please change unit status first.
+                  ⚠️ No units with BREAKDOWN or INACTIVE status available.
+                  Please change unit status first.
                 </p>
               )}
-              {units.filter((unit) => unit.unitStatus === "BREAKDOWN" || unit.unitStatus === "INACTIVE").length > 0 && (
+              {units.filter(
+                (unit) =>
+                  unit.unitStatus === "BREAKDOWN" ||
+                  unit.unitStatus === "INACTIVE",
+              ).length > 0 && (
                 <p className="mt-1 text-xs text-gray-500">
-                  Only units with BREAKDOWN or INACTIVE status can be selected for activities.
+                  Only units with BREAKDOWN or INACTIVE status can be selected
+                  for activities.
                 </p>
               )}
             </div>
@@ -220,4 +240,3 @@ export default function ActivityFormModal({
     </div>
   );
 }
-

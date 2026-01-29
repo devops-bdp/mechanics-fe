@@ -27,7 +27,7 @@ export default function PlannerActivitiesPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-    null
+    null,
   );
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<{
@@ -46,7 +46,12 @@ export default function PlannerActivitiesPage() {
       setIsLoading(true);
       const [activitiesRes, unitsRes] = await Promise.all([
         apiClient.getAllActivities(),
-        apiClient.getUnits(),
+        apiClient.getUnits({
+          page: 1,
+          limit: 1000,
+          sortBy: "unitCode",
+          sortOrder: "asc",
+        }),
       ]);
 
       if (activitiesRes.success) {
@@ -56,7 +61,26 @@ export default function PlannerActivitiesPage() {
       }
 
       if (unitsRes.success) {
-        setUnits(unitsRes.data);
+        console.log("Full API Response:", unitsRes);
+        console.log("Units data:", unitsRes.data);
+        console.log("Total units:", unitsRes.data?.length);
+
+        // Check if data is in pagination format
+        const unitsArray = Array.isArray(unitsRes.data)
+          ? unitsRes.data
+          : unitsRes.data?.data || [];
+
+        console.log("Units array:", unitsArray);
+        console.log(
+          "BREAKDOWN units:",
+          unitsArray.filter((u: any) => u.unitStatus === "BREAKDOWN"),
+        );
+        console.log(
+          "INACTIVE units:",
+          unitsArray.filter((u: any) => u.unitStatus === "INACTIVE"),
+        );
+
+        setUnits(unitsArray);
       } else {
         setError("Failed to load units");
       }
@@ -67,20 +91,12 @@ export default function PlannerActivitiesPage() {
     }
   };
 
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
 
     try {
-      // Check if selected unit has BREAKDOWN or INACTIVE status
-      const selectedUnit = units.find((u) => u.id === formData.unitId);
-      if (selectedUnit && selectedUnit.unitStatus !== "BREAKDOWN" && selectedUnit.unitStatus !== "INACTIVE") {
-        setError(`Cannot create activity for unit with ${selectedUnit.unitStatus} status. Unit must be in BREAKDOWN or INACTIVE status. Please change the unit status first.`);
-        return;
-      }
-
       const response = await apiClient.createActivity({
         activityName: formData.activityName,
         unitId: formData.unitId,
@@ -104,7 +120,8 @@ export default function PlannerActivitiesPage() {
         setError(response.message || "Failed to create activity");
       }
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || "An error occurred";
+      const errorMessage =
+        err.response?.data?.message || err.message || "An error occurred";
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -117,7 +134,7 @@ export default function PlannerActivitiesPage() {
     setIsDeleting(true);
     try {
       const response = await apiClient.deleteActivityAdmin(
-        deleteConfirm.activity.id
+        deleteConfirm.activity.id,
       );
       if (response.success) {
         setDeleteConfirm({ isOpen: false, activity: null });
