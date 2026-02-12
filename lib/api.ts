@@ -404,6 +404,16 @@ class ApiClient {
     return response.data;
   }
 
+  async downloadMechanicReportExcelById(mechanicId: string) {
+    const response = await this.client.get(
+      `/api/planner/mechanics-report/${mechanicId}/download/excel`,
+      {
+        responseType: "blob",
+      }
+    );
+    return response.data;
+  }
+
   // Analytics endpoints
   async getActivityAnalytics() {
     const response = await this.client.get("/api/planner/analytics/activities");
