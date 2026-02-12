@@ -57,6 +57,9 @@ export default function ActivityList({
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
             <tr>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Activity ID
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Unit Code
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
@@ -72,6 +75,12 @@ export default function ActivityList({
                 Estimated Start
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Created By
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Assigned GL
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
@@ -85,6 +94,11 @@ export default function ActivityList({
                 key={activity.id}
                 className="hover:bg-gray-50 transition-colors duration-150"
               >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-mono text-gray-900">
+                    {activity.id.substring(0, 8)}...
+                  </div>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-bold text-gray-900">
                     {activity.unit.unitCode}
@@ -140,6 +154,24 @@ export default function ActivityList({
                   <div className="text-xs text-gray-500">
                     {new Date(activity.estimatedStart).toLocaleTimeString()}
                   </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {activity.creator ? (
+                    <div className="text-sm text-gray-900">
+                      {activity.creator.firstName} {activity.creator.lastName}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400">-</span>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {activity.assignedGL ? (
+                    <div className="text-sm text-gray-900">
+                      {activity.assignedGL.firstName} {activity.assignedGL.lastName}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400">-</span>
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span

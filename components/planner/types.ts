@@ -7,6 +7,13 @@ export interface Activity {
   estimatedStart: string;
   createdAt?: string;
   updatedAt?: string;
+  assignedGroupLeader?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    nrp: number;
+    email?: string;
+  } | null;
   unit: {
     id: string;
     unitCode: string;

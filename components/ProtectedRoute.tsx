@@ -37,17 +37,6 @@ export default function ProtectedRoute({
       allowedPosisi
     );
 
-    // Debug logging (remove in production)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('ProtectedRoute check:', {
-        userRole: user.role,
-        userPosisi: user.posisi,
-        allowedRoles,
-        allowedPosisi,
-        hasAccess: userHasAccess
-      });
-    }
-
     if (!userHasAccess) {
       router.push('/dashboard');
       return;

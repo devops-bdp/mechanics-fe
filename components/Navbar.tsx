@@ -26,20 +26,22 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0 min-w-0">
-            <Link href="/dashboard" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
+            <Link href="/dashboard" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
               <Image
-                src="/NavLogo.png"
-                alt="Mechanic Activity Report Logo"
-                width={32}
-                height={32}
-                className="object-contain sm:w-10 sm:h-10"
+                src="/1.png"
+                alt="Batara Dharma Persada Property Logo"
+                width={40}
+                height={40}
+                className="object-contain sm:w-12 sm:h-12"
               />
-              <span className="text-sm sm:text-lg font-bold text-primary-600 hidden xs:inline sm:hidden">
-                MAR
-              </span>
-              <span className="text-base sm:text-lg font-bold text-primary-600 hidden sm:inline">
-                Mechanic Activity Report
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xs sm:text-sm font-bold text-primary-600 leading-tight">
+                  Mechanic Activity Report
+                </span>
+                <span className="text-[10px] sm:text-xs text-gray-500 leading-tight hidden sm:block">
+                  Batara Dharma Persada Property
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -106,19 +108,6 @@ export default function Navbar() {
                 href="/group-leader/activities"
                 className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
                   isActive('/group-leader/activities')
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                Activities
-              </Link>
-            ) : null}
-
-            {getEquivalentPosisi(user.posisi || '') === 'PLANNER' ? (
-              <Link
-                href="/supervisor/activities"
-                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors ${
-                  isActive('/supervisor/activities')
                     ? 'bg-primary-100 text-primary-700'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
@@ -331,20 +320,6 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
                 className={`block px-3 py-2 rounded-md text-base font-medium ${
                   isActive('/group-leader/activities')
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                Activities
-              </Link>
-            ) : null}
-
-            {getEquivalentPosisi(user.posisi || '') === 'PLANNER' ? (
-              <Link
-                href="/supervisor/activities"
-                onClick={() => setIsMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/supervisor/activities')
                     ? 'bg-primary-100 text-primary-700'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}

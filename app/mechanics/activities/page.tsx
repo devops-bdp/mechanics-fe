@@ -158,22 +158,9 @@ export default function MechanicsActivitiesPage() {
   };
 
   const getStatusActions = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return [{ label: 'Start', action: 'start' as const }];
-      case 'IN_PROGRESS':
-        return [
-          { label: 'Pause', action: 'pause' as const },
-          { label: 'Stop', action: 'stop' as const },
-        ];
-      case 'PAUSED':
-        return [
-          { label: 'Resume', action: 'resume' as const },
-          { label: 'Stop', action: 'stop' as const },
-        ];
-      default:
-        return [];
-    }
+    // Mechanics can only view activities, not operate them
+    // Group Leaders will handle start/stop operations
+    return [];
   };
 
   const calculateTaskTime = (task: { startedAt: string | null; stoppedAt: string | null }): number => {
@@ -477,52 +464,11 @@ function ActivityDetailModal({
     refreshActivity();
   }, [activity]);
 
+  // Task actions removed - mechanics can only view activities
+  // Group Leaders will handle task start/stop operations
   const handleTaskAction = async (action: 'start' | 'stop', task: { taskName: string }) => {
-    try {
-      setError('');
-      const activityId = currentActivity.activity?.id;
-      if (!activityId) {
-        setError('Activity ID not found. Please refresh the page.');
-        return;
-      }
-
-      if (!task.taskName) {
-        setError('Task name is missing. Please refresh the page.');
-        return;
-      }
-
-      const normalizedTaskName = normalizeTaskName(task.taskName);
-
-      let response;
-      if (action === 'start') {
-        response = await apiClient.startTask(activityId, normalizedTaskName);
-      } else {
-        response = await apiClient.stopTask(activityId, normalizedTaskName);
-      }
-
-      if (response.success) {
-        onRefresh();
-        // Refresh current activity in modal
-        const refreshResponse = await apiClient.getMyActivities();
-        if (refreshResponse.success) {
-          const activitiesData = refreshResponse.data || [];
-          
-          // Find the activity by matching the ActivityMechanic id
-          const foundActivity = activitiesData.find(
-            (act: Activity) => act.id === currentActivity.id
-          );
-          
-          if (foundActivity) {
-            setCurrentActivity(foundActivity);
-          }
-        }
-      } else {
-        setError(response.message || 'Task action failed');
-      }
-    } catch (error: any) {
-      console.error('Task action error:', error);
-      setError(error.response?.data?.message || error.message || 'An error occurred');
-    }
+    // This function is disabled for mechanics
+    setError('Mechanics can only view activities. Please contact your Group Leader to start or stop tasks.');
   };
 
   // currentActivity is already the ActivityMechanic for the current user
@@ -530,7 +476,8 @@ function ActivityDetailModal({
   const userTasks = currentActivity.tasks || [];
   const userStatus = currentActivity.status; // This is the ActivityMechanic status, which is correct
   
-  const actions = getStatusActions(userStatus);
+  // Mechanics can only view activities, not operate them
+  const actions: Array<{ label: string; action: 'start' | 'pause' | 'resume' | 'stop' }> = [];
   const totalTaskTime = userTasks
     ? userTasks.reduce((sum, task) => sum + calculateTaskTime(task), 0)
     : 0;
@@ -604,49 +551,15 @@ function ActivityDetailModal({
               </div>
             )}
 
-            {/* Activity Actions */}
-            {actions.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {actions.map(({ label, action }) => (
-                  <button
-                    key={action}
-                    onClick={() => handleAction(currentActivity, action).then(() => {
-                      onRefresh();
-                      // Refresh activity in modal
-                      apiClient.getMyActivities().then((response) => {
-                        if (response.success) {
-                          const activitiesData = response.data || [];
-                          
-                          // Find the activity by matching the ActivityMechanic id
-                          const foundActivity = activitiesData.find(
-                            (act: Activity) => act.id === currentActivity.id
-                          );
-                          
-                          if (foundActivity) {
-                            setCurrentActivity(foundActivity);
-                          }
-                        }
-                      });
-                    })}
-                    className={`inline-flex items-center gap-2 px-4 py-2.5 border border-transparent text-sm font-bold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 transform ${
-                      action === 'stop'
-                        ? 'text-white bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700'
-                        : action === 'pause'
-                        ? 'text-white bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700'
-                        : action === 'resume'
-                        ? 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700'
-                        : 'text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500`}
-                  >
-                    {action === 'start' && '▶'}
-                    {action === 'pause' && '⏸'}
-                    {action === 'resume' && '▶'}
-                    {action === 'stop' && '⏹'}
-                    {label}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Activity Actions - Removed for mechanics */}
+            {/* Mechanics can only view activities, not operate them */}
+            {/* Group Leaders will handle start/stop/pause/resume operations */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-blue-800 flex items-center gap-2">
+                <span>ℹ️</span>
+                <span>You can view activity details here. Please contact your Group Leader to start, pause, resume, or stop activities.</span>
+              </p>
+            </div>
 
             {/* Tasks Breakdown */}
             {userTasks && userTasks.length > 0 && (
@@ -774,35 +687,17 @@ function ActivityDetailModal({
                                 </div>
                               )}
                             </div>
-                            {/* Task Action Buttons */}
-                            {userStatus === 'IN_PROGRESS' && (
-                              <div className="flex gap-2">
-                                {!task.startedAt && canStart && (
-                                  <button
-                                    onClick={() => handleTaskAction('start', task)}
-                                    className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 transform"
-                                  >
-                                    ▶ Start
-                                  </button>
-                                )}
-                                {isActive && (
-                                  <button
-                                    onClick={() => handleTaskAction('stop', task)}
-                                    className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 transform"
-                                  >
-                                    ⏹ Stop
-                                  </button>
-                                )}
-                                {isLocked && (
-                                  <span className="px-4 py-2 text-xs font-semibold text-gray-500 bg-gray-200 rounded-lg shadow-sm">
-                                    🔒 Locked
-                                  </span>
-                                )}
-                              </div>
+                            {/* Task Action Buttons - Removed for mechanics */}
+                            {/* Mechanics can only view activities, not operate them */}
+                            {/* Group Leaders will handle task start/stop operations */}
+                            {userStatus === 'IN_PROGRESS' && isLocked && (
+                              <span className="px-4 py-2 text-xs font-semibold text-gray-500 bg-gray-200 rounded-lg shadow-sm">
+                                🔒 Locked - Contact Group Leader
+                              </span>
                             )}
                             {userStatus !== 'IN_PROGRESS' && !task.startedAt && (
                               <span className="px-4 py-2 text-xs font-semibold text-gray-400 bg-gray-100 rounded-lg shadow-sm">
-                                ⏸ Start activity first
+                                ⏸ Waiting for Group Leader to start activity
                               </span>
                             )}
                           </div>

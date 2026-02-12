@@ -5,8 +5,7 @@ const urlsToCache = [
   '/login',
   '/dashboard',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
+  '/1.png', // Use existing logo instead of missing icons
 ];
 
 // Install event - cache resources
@@ -15,9 +14,23 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        // Cache files one by one to handle missing files gracefully
+        return Promise.allSettled(
+          urlsToCache.map((url) =>
+            cache.add(url).catch((err) => {
+              console.warn(`Failed to cache ${url}:`, err);
+              // Don't throw - continue caching other files
+            })
+          )
+        );
+      })
+      .catch((err) => {
+        console.error('Cache installation failed:', err);
+        // Don't prevent service worker from installing
       })
   );
+  // Skip waiting to activate immediately
+  self.skipWaiting();
 });
 
 // Activate event - clean up old caches

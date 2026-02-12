@@ -26,7 +26,7 @@ class ApiClient {
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
 
     // Add response interceptor to handle errors
@@ -42,7 +42,7 @@ class ApiClient {
           }
         }
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -70,27 +70,39 @@ class ApiClient {
     return response.data;
   }
 
-  async bulkCreateUsers(users: Array<{
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    nrp: number;
-    role?: string;
-    posisi?: string;
-    phoneNumber?: string;
-    avatar?: string;
-  }>) {
-    const response = await this.client.post("/api/superadmin/users/bulk-create", { users });
+  async bulkCreateUsers(
+    users: Array<{
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+      nrp: number;
+      role?: string;
+      posisi?: string;
+      phoneNumber?: string;
+      avatar?: string;
+    }>,
+  ) {
+    const response = await this.client.post(
+      "/api/superadmin/users/bulk-create",
+      { users },
+    );
     return response.data;
   }
 
   async bulkDeleteUsers(userIds: string[]) {
-    const response = await this.client.post("/api/superadmin/users/bulk-delete", { userIds });
+    const response = await this.client.post(
+      "/api/superadmin/users/bulk-delete",
+      { userIds },
+    );
     return response.data;
   }
 
-  async updateProfile(data: { firstName?: string; lastName?: string; phoneNumber?: string }) {
+  async updateProfile(data: {
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+  }) {
     const response = await this.client.put("/api/auth/profile", data);
     return response.data;
   }
@@ -98,12 +110,16 @@ class ApiClient {
   async uploadProfilePicture(file: File) {
     const formData = new FormData();
     formData.append("profilePicture", file);
-    
-    const response = await this.client.post("/api/auth/profile/picture", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+
+    const response = await this.client.post(
+      "/api/auth/profile/picture",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       },
-    });
+    );
     return response.data;
   }
 
@@ -146,18 +162,18 @@ class ApiClient {
       startTime?: string;
       endTime?: string;
       date?: string;
-    }
+    },
   ) {
     const response = await this.client.put(
       `/api/mechanics/work-times/${id}`,
-      data
+      data,
     );
     return response.data;
   }
 
   async deleteWorkTime(id: string) {
     const response = await this.client.delete(
-      `/api/mechanics/work-times/${id}`
+      `/api/mechanics/work-times/${id}`,
     );
     return response.data;
   }
@@ -169,28 +185,28 @@ class ApiClient {
 
   async startActivity(activityId: string) {
     const response = await this.client.post(
-      `/api/mechanics/activities/${activityId}/start`
+      `/api/mechanics/activities/${activityId}/start`,
     );
     return response.data;
   }
 
   async pauseActivity(activityId: string) {
     const response = await this.client.post(
-      `/api/mechanics/activities/${activityId}/pause`
+      `/api/mechanics/activities/${activityId}/pause`,
     );
     return response.data;
   }
 
   async resumeActivity(activityId: string) {
     const response = await this.client.post(
-      `/api/mechanics/activities/${activityId}/resume`
+      `/api/mechanics/activities/${activityId}/resume`,
     );
     return response.data;
   }
 
   async stopActivity(activityId: string) {
     const response = await this.client.post(
-      `/api/mechanics/activities/${activityId}/stop`
+      `/api/mechanics/activities/${activityId}/stop`,
     );
     return response.data;
   }
@@ -198,7 +214,7 @@ class ApiClient {
   async startTask(activityId: string, taskName: string) {
     const response = await this.client.post(
       `/api/mechanics/activities/${activityId}/tasks/start`,
-      { taskName }
+      { taskName },
     );
     return response.data;
   }
@@ -206,7 +222,7 @@ class ApiClient {
   async stopTask(activityId: string, taskName: string) {
     const response = await this.client.post(
       `/api/mechanics/activities/${activityId}/tasks/stop`,
-      { taskName }
+      { taskName },
     );
     return response.data;
   }
@@ -234,6 +250,22 @@ class ApiClient {
     return response.data;
   }
 
+  async getPlannerGroupLeaders() {
+    const response = await this.client.get("/api/planner/group-leaders");
+    return response.data;
+  }
+
+  async assignGroupLeaderToActivity(
+    activityId: string,
+    groupLeaderId: string,
+  ) {
+    const response = await this.client.post(
+      `/api/planner/activities/${activityId}/assign-group-leader`,
+      { groupLeaderId },
+    );
+    return response.data;
+  }
+
   async updateActivity(
     id: string,
     data: {
@@ -242,11 +274,11 @@ class ApiClient {
       remarks?: string;
       estimatedStart?: string;
       activityStatus?: string;
-    }
+    },
   ) {
     const response = await this.client.put(
       `/api/planner/activities/${id}`,
-      data
+      data,
     );
     return response.data;
   }
@@ -283,14 +315,16 @@ class ApiClient {
     return response.data;
   }
 
-  async bulkCreateUnits(units: Array<{
-    unitType: string;
-    unitBrand: string;
-    unitCode: string;
-    unitDescription?: string;
-    unitImage?: string;
-    unitStatus?: string;
-  }>) {
+  async bulkCreateUnits(
+    units: Array<{
+      unitType: string;
+      unitBrand: string;
+      unitCode: string;
+      unitDescription?: string;
+      unitImage?: string;
+      unitStatus?: string;
+    }>,
+  ) {
     const response = await this.client.post("/api/units/bulk-create", units);
     return response.data;
   }
@@ -304,7 +338,7 @@ class ApiClient {
       unitDescription?: string;
       unitImage?: string;
       unitStatus?: string;
-    }
+    },
   ) {
     const response = await this.client.put(`/api/units/${id}`, data);
     return response.data;
@@ -336,15 +370,36 @@ class ApiClient {
   }
 
   async getBreakdownUnitsReport() {
-    const response = await this.client.get("/api/planner/unit-report/breakdown");
+    const response = await this.client.get(
+      "/api/planner/unit-report/breakdown",
+    );
     return response.data;
   }
 
-  async getMechanicsReport(params?: {
-    search?: string;
-  }) {
+  async getMechanicsReport(params?: { search?: string; page?: number; limit?: number }) {
     const response = await this.client.get("/api/planner/mechanics-report", {
       params,
+    });
+    return response.data;
+  }
+
+  async getMechanicReportById(mechanicId: string) {
+    const response = await this.client.get(`/api/planner/mechanics-report/${mechanicId}`);
+    return response.data;
+  }
+
+  async downloadMechanicsReportPDF(params?: { search?: string }) {
+    const response = await this.client.get("/api/planner/mechanics-report/download/pdf", {
+      params,
+      responseType: "blob",
+    });
+    return response.data;
+  }
+
+  async downloadMechanicsReportExcel(params?: { search?: string }) {
+    const response = await this.client.get("/api/planner/mechanics-report/download/excel", {
+      params,
+      responseType: "blob",
     });
     return response.data;
   }
@@ -382,7 +437,7 @@ class ApiClient {
       phoneNumber?: string;
       avatar?: string;
       password?: string;
-    }
+    },
   ) {
     const response = await this.client.put(`/api/superadmin/users/${id}`, data);
     return response.data;
@@ -412,7 +467,7 @@ class ApiClient {
 
   async deleteActivityAdmin(id: string) {
     const response = await this.client.delete(
-      `/api/superadmin/activities/${id}`
+      `/api/superadmin/activities/${id}`,
     );
     return response.data;
   }
@@ -434,7 +489,7 @@ class ApiClient {
 
   async deleteWorkTimeAdmin(id: string) {
     const response = await this.client.delete(
-      `/api/superadmin/work-times/${id}`
+      `/api/superadmin/work-times/${id}`,
     );
     return response.data;
   }
@@ -445,8 +500,34 @@ class ApiClient {
   }
 
   // Group Leader endpoints
-  async getGroupLeaderActivities() {
-    const response = await this.client.get("/api/groupleader/activities");
+  async getGroupLeaderActivities(params?: {
+    search?: string;
+    status?: string;
+    activityName?: string;
+    unitId?: string;
+    mechanicId?: string;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) {
+    const queryParams = new URLSearchParams();
+    if (params?.search) queryParams.append("search", params.search);
+    if (params?.status) queryParams.append("status", params.status);
+    if (params?.activityName)
+      queryParams.append("activityName", params.activityName);
+    if (params?.unitId) queryParams.append("unitId", params.unitId);
+    if (params?.mechanicId) queryParams.append("mechanicId", params.mechanicId);
+    if (params?.page) queryParams.append("page", params.page.toString());
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
+    if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
+
+    const queryString = queryParams.toString();
+    const url = `/api/groupleader/activities${
+      queryString ? `?${queryString}` : ""
+    }`;
+    const response = await this.client.get(url);
     return response.data;
   }
 
@@ -461,25 +542,66 @@ class ApiClient {
       activityStatus?: string;
       description?: string;
       remarks?: string;
-    }
+    },
   ) {
     const response = await this.client.put(
       `/api/groupleader/activities/${id}`,
-      data
+      data,
     );
     return response.data;
   }
 
-  async assignMechanicsToActivityGroupLeader(activityId: string, mechanicIds: string[]) {
+  async assignMechanicsToActivityGroupLeader(
+    activityId: string,
+    mechanicIds: string[],
+  ) {
     const response = await this.client.post(
       `/api/groupleader/activities/${activityId}/assign-mechanics`,
-      { mechanicIds }
+      { mechanicIds },
     );
     return response.data;
   }
 
   async getGroupLeaderMechanics() {
     const response = await this.client.get("/api/groupleader/mechanics");
+    return response.data;
+  }
+
+  async startActivityForAllMechanics(activityId: string) {
+    const response = await this.client.post(
+      `/api/groupleader/activities/${activityId}/start-all`,
+    );
+    return response.data;
+  }
+
+  async stopActivityForAllMechanics(activityId: string) {
+    const response = await this.client.post(
+      `/api/groupleader/activities/${activityId}/stop-all`,
+    );
+    return response.data;
+  }
+
+  async startMechanicTask(
+    activityId: string,
+    mechanicId: string,
+    taskName: string,
+  ) {
+    const response = await this.client.post(
+      `/api/groupleader/activities/${activityId}/mechanics/${mechanicId}/tasks/start`,
+      { taskName },
+    );
+    return response.data;
+  }
+
+  async stopMechanicTask(
+    activityId: string,
+    mechanicId: string,
+    taskName: string,
+  ) {
+    const response = await this.client.post(
+      `/api/groupleader/activities/${activityId}/mechanics/${mechanicId}/tasks/stop`,
+      { taskName },
+    );
     return response.data;
   }
 
@@ -500,11 +622,11 @@ class ApiClient {
       activityStatus?: string;
       description?: string;
       remarks?: string;
-    }
+    },
   ) {
     const response = await this.client.put(
       `/api/supervisor/activities/${id}`,
-      data
+      data,
     );
     return response.data;
   }
@@ -512,7 +634,7 @@ class ApiClient {
   async assignMechanicsToActivity(activityId: string, mechanicIds: string[]) {
     const response = await this.client.post(
       `/api/supervisor/activities/${activityId}/assign-mechanics`,
-      { mechanicIds }
+      { mechanicIds },
     );
     return response.data;
   }

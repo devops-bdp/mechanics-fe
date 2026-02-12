@@ -43,6 +43,7 @@ interface Activity {
   totalWorkTime: number;
   createdAt: string;
   updatedAt: string;
+  mechanic?: MechanicInfo; // Mechanic info from backend
   activity: {
     id: string;
     activityName: string;
@@ -91,9 +92,9 @@ export default function MechanicsListActivitiesPage() {
         const activitiesData = response.data || [];
         
         // Group activities by activityId to show all mechanics per activity
-        const groupedActivities = new Map<string, Activity[]>();
+        const groupedActivities = new Map<string, any[]>();
         
-        activitiesData.forEach((activity: Activity) => {
+        activitiesData.forEach((activity: any) => {
           const activityId = activity.activity?.id || activity.activityId;
           if (!groupedActivities.has(activityId)) {
             groupedActivities.set(activityId, []);
@@ -105,19 +106,28 @@ export default function MechanicsListActivitiesPage() {
         const processedActivities: Activity[] = [];
         groupedActivities.forEach((activityGroup, activityId) => {
           if (activityGroup.length > 0) {
-            const mainActivity = activityGroup[0];
-            // If multiple mechanics, add mechanics array
-            if (activityGroup.length > 1) {
-              mainActivity.mechanics = activityGroup.map(act => ({
+            const mainActivity = activityGroup[0] as Activity;
+            // Always add mechanics array to show all mechanics assigned to this activity
+            mainActivity.mechanics = activityGroup.map((act: any) => {
+              // The backend returns mechanic info in the activity object
+              const mechanicInfo = act.mechanic || {
+                id: act.mechanicId,
+                firstName: 'Unknown',
+                lastName: 'Mechanic',
+                nrp: 0,
+              };
+              
+              return {
                 id: act.id,
                 status: act.status,
                 startedAt: act.startedAt,
                 stoppedAt: act.stoppedAt,
                 totalWorkTime: act.totalWorkTime,
                 mechanicId: act.mechanicId,
+                mechanic: mechanicInfo, // Include mechanic info
                 tasks: act.tasks,
-              }));
-            }
+              };
+            });
             processedActivities.push(mainActivity);
           }
         });
