@@ -15,6 +15,10 @@ export default function ProfilePage() {
   const [isUploading, setIsUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   useEffect(() => {
     const currentUser = getUser();
@@ -142,6 +146,44 @@ export default function ProfilePage() {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+    }
+  };
+
+  const handleChangePassword = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      await showError('Please fill in all password fields');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      await showError('New password must be at least 6 characters long');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      await showError('New password and confirmation do not match');
+      return;
+    }
+
+    setIsChangingPassword(true);
+
+    try {
+      const response = await apiClient.changePassword(oldPassword, newPassword);
+
+      if (response.success) {
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        await showSuccess('Password changed successfully!');
+      } else {
+        await showError(response.message || 'Failed to change password');
+      }
+    } catch (error: any) {
+      await showError(error.response?.data?.message || 'An error occurred while changing password');
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -429,6 +471,63 @@ export default function ProfilePage() {
                   </button>
                 </div>
               </form>
+
+              {/* Change Password Section */}
+              <div className="mt-10 pt-8 border-t border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Change Password
+                </h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Update your account password. Make sure to use a strong and unique password.
+                </p>
+                <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      required
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Confirm New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={isChangingPassword}
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isChangingPassword ? 'Changing...' : 'Change Password'}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </main>
