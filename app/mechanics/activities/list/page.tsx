@@ -79,6 +79,8 @@ export default function MechanicsListActivitiesPage() {
   const [error, setError] = useState('');
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
   useEffect(() => {
     loadActivities();
@@ -206,6 +208,49 @@ export default function MechanicsListActivitiesPage() {
     return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
   };
 
+  const filteredActivities = activities.filter((activity) => {
+    // Status filter
+    if (statusFilter !== 'ALL' && activity.status !== statusFilter) {
+      return false;
+    }
+
+    // Search filter
+    if (!searchTerm.trim()) {
+      return true;
+    }
+
+    const term = searchTerm.toLowerCase();
+
+    const unit = activity.activity.unit;
+    const activityName = activity.activity.activityName || '';
+
+    const matchesUnitCode = unit.unitCode.toLowerCase().includes(term);
+    const matchesUnitInfo =
+      unit.unitType.toLowerCase().includes(term) ||
+      unit.unitBrand.toLowerCase().includes(term);
+    const matchesActivityName = activityName
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .includes(term);
+
+    const matchesMechanic =
+      activity.mechanics &&
+      activity.mechanics.some((m) => {
+        const first = m.mechanic?.firstName || '';
+        const last = m.mechanic?.lastName || '';
+        const fullName = `${first} ${last}`.toLowerCase();
+        const nrp = m.mechanic?.nrp ? String(m.mechanic.nrp) : '';
+        return (
+          first.toLowerCase().includes(term) ||
+          last.toLowerCase().includes(term) ||
+          fullName.includes(term) ||
+          nrp.includes(term)
+        );
+      });
+
+    return matchesUnitCode || matchesUnitInfo || matchesActivityName || matchesMechanic;
+  });
+
   return (
     <ProtectedRoute allowedPosisi={['MEKANIK']}>
       <div className="min-h-screen bg-gray-50">
@@ -222,7 +267,7 @@ export default function MechanicsListActivitiesPage() {
               onClick={() => router.push('/mechanics/activities')}
               className="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-primary-600 rounded-lg hover:bg-primary-700"
             >
-              My Activities
+              Ongoing Activities
             </button>
           </div>
 
@@ -232,13 +277,67 @@ export default function MechanicsListActivitiesPage() {
             </div>
           )}
 
+          {/* Filters */}
+          <div className="mb-4 bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="w-full sm:w-2/3">
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
+                Search
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-4 w-4 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-4.35-4.35M11 17a6 6 0 100-12 6 6 0 000 12z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by unit code, unit info, activity name, or mechanic name/NRP..."
+                  className="block w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+            </div>
+
+            <div className="w-full sm:w-1/3">
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
+                Status
+              </label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="block w-full pl-3 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="PAUSED">Paused</option>
+                <option value="DELAYED">Delayed</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+            </div>
+          </div>
+
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
-          ) : activities.length === 0 ? (
+          ) : filteredActivities.length === 0 ? (
             <div className="bg-white shadow rounded-lg p-8 text-center">
-              <p className="text-gray-500">No activities assigned yet.</p>
+              <p className="text-gray-500 mb-1">No activities found.</p>
+              <p className="text-xs text-gray-400">
+                Try adjusting your search or status filter.
+              </p>
             </div>
           ) : (
             <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200">
@@ -270,7 +369,7 @@ export default function MechanicsListActivitiesPage() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {activities.map((activity) => {
+                    {filteredActivities.map((activity) => {
                       const totalTaskTime = activity.tasks
                         ? activity.tasks.reduce((sum, task) => sum + calculateTaskTime(task), 0)
                         : 0;

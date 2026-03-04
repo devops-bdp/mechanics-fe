@@ -144,6 +144,54 @@ export default function ActivityDetailModal({
               </div>
             )}
 
+            {/* Assigned Group Leader */}
+            <div className="bg-gradient-to-r from-sky-50 to-blue-50 rounded-xl p-4 border-2 border-sky-200 shadow-sm">
+              <label className="text-sm font-extrabold text-gray-900 mb-3 flex items-center gap-2">
+                <svg
+                  className="h-5 w-5 text-sky-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                Assigned Group Leader
+              </label>
+
+              {activity.assignedGroupLeader ? (
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <p className="text-base font-bold text-gray-900">
+                      {activity.assignedGroupLeader.firstName}{" "}
+                      {activity.assignedGroupLeader.lastName}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      <span className="font-semibold">NRP:</span>{" "}
+                      {activity.assignedGroupLeader.nrp}
+                      {activity.assignedGroupLeader.email && (
+                        <span className="ml-2">
+                          <span className="font-semibold">| Email:</span>{" "}
+                          {activity.assignedGroupLeader.email}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-800 border border-sky-200">
+                    Group Leader
+                  </span>
+                </div>
+              ) : (
+                <div className="rounded-lg border-2 border-dashed border-sky-200 bg-white/50 px-4 py-3 text-sm text-sky-700 text-center">
+                  No Group Leader assigned yet
+                </div>
+              )}
+            </div>
+
             {/* Mechanics */}
             <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-xl p-5 border-2 border-gray-200 shadow-sm">
               <label className="text-sm font-extrabold text-gray-900 mb-4 flex items-center gap-2">

@@ -80,8 +80,26 @@ export default function ActivityDetailModal({
       );
 
       if (response.success) {
+        // Refresh data to get latest mechanics/tasks
         if (onRefresh) {
           await onRefresh();
+        }
+
+        // Auto-stop the whole activity when all mechanics are completed
+        if (onStopActivity) {
+          // Check from response data if all mechanic assignments are completed
+          const updatedActivity = (response as any).data;
+          const mechanics =
+            updatedActivity?.mechanics || activity.mechanics || [];
+          const allCompleted =
+            mechanics.length > 0 &&
+            mechanics.every(
+              (m: any) => m.status === "COMPLETED",
+            );
+
+          if (allCompleted) {
+            await onStopActivity(activity.id);
+          }
         }
       } else {
         setTaskError(response.message || "Failed to stop task");

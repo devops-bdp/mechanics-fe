@@ -18,19 +18,24 @@ export const calculateTaskTime = (task: {
   const start = new Date(task.startedAt);
   const end = task.stoppedAt ? new Date(task.stoppedAt) : new Date();
   const diffMs = end.getTime() - start.getTime();
-  return Math.floor(diffMs / 60000); // Convert to minutes
+  return Math.floor(diffMs / 1000); // Return seconds
 };
 
-export const formatTime = (minutes: number): string => {
-  if (minutes === 0) {
-    return "0m";
+export const formatTime = (seconds: number): string => {
+  if (seconds <= 0) {
+    return "0s";
   }
-  if (minutes < 60) {
-    return `${minutes}m`;
-  }
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  const parts: string[] = [];
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (secs > 0 || parts.length === 0) parts.push(`${secs}s`);
+
+  return parts.join(" ");
 };
 
 export const getStatusColor = (status: string): string => {

@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { getUser, setUser } from '@/lib/auth';
 import { apiClient } from '@/lib/api';
-import { showError, showSuccess } from '@/lib/swal';
+import { showError, showSuccess, confirmDataChange } from '@/lib/swal';
 
 export default function ProfilePage() {
   const [user, setUserState] = useState<any>(null);
@@ -35,6 +35,17 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    // Confirm before saving changes
+    const confirmResult = await confirmDataChange(
+      'Are you sure you want to save these profile changes?',
+      'Confirm Profile Update'
+    );
+
+    if (!confirmResult.isConfirmed) {
+      return; // User cancelled
+    }
+
     setIsLoading(true);
 
     try {

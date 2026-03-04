@@ -2,7 +2,7 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { apiClient } from "@/lib/api";
-import { showError, showSuccess } from "@/lib/swal";
+import { showError, showSuccess, confirmDataChange } from "@/lib/swal";
 import { UNIT_TYPES, UNIT_BRANDS, UNIT_STATUSES } from "@/lib/constants/enums";
 
 interface EditUnitModalProps {
@@ -58,6 +58,16 @@ export default function EditUnitModal({
     if (!formData.unitType || !formData.unitBrand || !formData.unitCode) {
       await showError("Please fill in all required fields");
       return;
+    }
+
+    // Confirm before saving changes
+    const confirmResult = await confirmDataChange(
+      `Are you sure you want to update unit "${formData.unitCode}"?`,
+      "Confirm Unit Update"
+    );
+
+    if (!confirmResult.isConfirmed) {
+      return; // User cancelled
     }
 
     setIsSubmitting(true);

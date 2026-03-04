@@ -33,14 +33,22 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          // Unauthorized - clear token and redirect to login
-          if (typeof window !== "undefined") {
+        const status = error.response?.status;
+        const url = (error.config && error.config.url) || "";
+
+        if (status === 401) {
+          // For login endpoint, let the page handle the 401 (show toast/alert)
+          const isLoginRequest =
+            typeof url === "string" && url.includes("/api/auth/login");
+
+          if (!isLoginRequest && typeof window !== "undefined") {
+            // Unauthorized on other endpoints - clear token and redirect to login
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             window.location.href = "/login";
           }
         }
+
         return Promise.reject(error);
       },
     );
@@ -360,6 +368,23 @@ class ApiClient {
     sortOrder?: string;
   }) {
     const response = await this.client.get("/api/superadmin/users", { params });
+    return response.data;
+  }
+
+  async downloadUsersExcel(params?: {
+    role?: string;
+    posisi?: string;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  }) {
+    const response = await this.client.get(
+      "/api/superadmin/users/download/excel",
+      {
+        params,
+        responseType: "blob",
+      },
+    );
     return response.data;
   }
 

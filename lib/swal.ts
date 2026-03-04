@@ -78,3 +78,40 @@ export const closeSwal = () => {
   Swal.close();
 };
 
+// Confirm before changing/updating data
+export const confirmDataChange = (
+  message: string = 'Are you sure you want to save these changes?',
+  title: string = 'Confirm Changes'
+) => {
+  return Swal.fire({
+    icon: 'question',
+    title,
+    text: message,
+    showCancelButton: true,
+    confirmButtonColor: '#10b981',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Yes, Save Changes',
+    cancelButtonText: 'Cancel',
+    reverseButtons: true,
+  });
+};
+
+// Confirm before deleting data
+export const confirmDelete = (
+  message: string = 'Are you sure you want to delete this item?',
+  title: string = 'Confirm Delete',
+  itemName?: string
+) => {
+  return Swal.fire({
+    icon: 'warning',
+    title,
+    text: itemName ? `${message}\n\nItem: ${itemName}` : message,
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Yes, Delete',
+    cancelButtonText: 'Cancel',
+    reverseButtons: true,
+  });
+};
+

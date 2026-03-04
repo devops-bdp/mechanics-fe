@@ -34,7 +34,14 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       closeSwal();
-      await showError(err.response?.data?.message || 'An error occurred during login');
+      if (err.response?.status === 401) {
+        // Wrong email/NRP or password
+        await showError('Email/NRP atau password salah. Silakan coba lagi.', 'Login gagal');
+      } else {
+        await showError(
+          err.response?.data?.message || 'An error occurred during login'
+        );
+      }
     } finally {
       setIsLoading(false);
     }

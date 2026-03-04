@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { getUser, logout } from '@/lib/auth';
 import { getEquivalentPosisi } from '@/lib/access-control';
+import { showConfirm } from '@/lib/swal';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,8 +15,28 @@ export default function Navbar() {
 
   const isActive = (path: string) => pathname === path;
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    try {
+      const result = await showConfirm(
+        'Are you sure you want to logout?',
+        'Confirm Logout',
+        'Yes, Logout',
+        'Cancel'
+      );
+
+      if (result.isConfirmed) {
+        logout();
+      }
+    } catch (error) {
+      console.error('Error showing logout confirmation:', error);
+      // If SweetAlert fails, still allow logout
+      logout();
+    }
   };
 
   if (!user) return null;
@@ -163,8 +184,8 @@ export default function Navbar() {
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  <span className="hidden xl:inline">My Activities</span>
-                  <span className="xl:hidden">My</span>
+                  <span className="hidden xl:inline">Ongoing Activities</span>
+                  <span className="xl:hidden">Ongoing</span>
                 </Link>
               </>
             ) : null}
@@ -377,7 +398,7 @@ export default function Navbar() {
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  My Activities
+                  Ongoing Activities
                 </Link>
               </>
             ) : null}
@@ -418,9 +439,9 @@ export default function Navbar() {
             </Link>
 
             <button
-              onClick={() => {
+              onClick={async () => {
                 setIsMenuOpen(false);
-                handleLogout();
+                await handleLogout();
               }}
               className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50"
             >

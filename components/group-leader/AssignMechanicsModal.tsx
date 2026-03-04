@@ -208,38 +208,62 @@ export default function AssignMechanicsModal({
                     </p>
                   )}
                 </div>
-                <select
-                  multiple
-                  size={8}
-                  value={selectedMechanicIds}
-                  onChange={(e) => {
-                    const selected = Array.from(
-                      e.target.selectedOptions,
-                      (option) => option.value
-                    );
-                    if (selected.length <= 7) {
-                      setSelectedMechanicIds(selected);
-                      setError("");
-                    } else {
-                      setError("Maximum 7 mechanics allowed");
-                    }
-                  }}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                >
+                <div className="mt-1 max-h-64 overflow-y-auto rounded-md border border-gray-200 divide-y divide-gray-100">
                   {mechanics.length === 0 ? (
-                    <option value="" disabled>
+                    <div className="px-4 py-3 text-sm text-gray-500 text-center">
                       No mechanics available
-                    </option>
+                    </div>
                   ) : (
-                    mechanics.map((mechanic) => (
-                      <option key={mechanic.id} value={mechanic.id}>
-                        {mechanic.firstName} {mechanic.lastName} (NRP: {mechanic.nrp}) - {mechanic.posisi}
-                      </option>
-                    ))
+                    mechanics.map((mechanic) => {
+                      const isSelected = selectedMechanicIds.includes(
+                        mechanic.id
+                      );
+                      return (
+                        <button
+                          type="button"
+                          key={mechanic.id}
+                          onClick={() => toggleMechanic(mechanic.id)}
+                          className={`w-full text-left px-4 py-3 flex items-center justify-between gap-3 transition-colors ${
+                            isSelected
+                              ? "bg-primary-50 hover:bg-primary-100"
+                              : "bg-white hover:bg-gray-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 text-white flex items-center justify-center text-xs font-semibold shadow-sm">
+                              {mechanic.firstName?.[0]}
+                              {mechanic.lastName?.[0]}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-gray-900 truncate">
+                                {mechanic.firstName} {mechanic.lastName}
+                              </p>
+                              <p className="text-xs text-gray-500 truncate">
+                                NRP: {mechanic.nrp} • {mechanic.posisi}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {isSelected && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary-100 text-primary-800 border border-primary-200">
+                                Selected
+                              </span>
+                            )}
+                            <span
+                              className={`inline-flex h-4 w-4 rounded-full border-2 ${
+                                isSelected
+                                  ? "border-primary-600 bg-primary-500"
+                                  : "border-gray-300 bg-white"
+                              }`}
+                            />
+                          </div>
+                        </button>
+                      );
+                    })
                   )}
-                </select>
+                </div>
                 <p className="mt-1 text-xs text-gray-500">
-                  {selectedMechanicIds.length}/7 mechanics selected. Hold Ctrl/Cmd to select multiple.
+                  {selectedMechanicIds.length}/7 mechanics selected. Click mechanics to select or unselect.
                 </p>
                 {selectedMechanicIds.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">

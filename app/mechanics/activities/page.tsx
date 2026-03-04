@@ -267,7 +267,7 @@ export default function MechanicsActivitiesPage() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Activities</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Ongoing Activities</h1>
               <p className="text-sm text-gray-600 mt-1">
                 Activities that need your attention (Pending, In Progress, Paused, Delayed)
               </p>
@@ -292,7 +292,7 @@ export default function MechanicsActivitiesPage() {
             </div>
           ) : (() => {
             // Filter activities that need attention: PENDING, IN_PROGRESS, PAUSED, DELAYED
-            // Exclude COMPLETED activities from "My Activities" (they can be viewed in "List Activities")
+            // Exclude COMPLETED activities from "Ongoing Activities" (they can be viewed in "List Activities")
             // Use the status from ActivityMechanic (the mechanic's assignment status)
             const myActivities = activities.filter(
               (activity) => {
